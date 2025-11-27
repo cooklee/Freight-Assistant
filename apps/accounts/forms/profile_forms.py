@@ -29,7 +29,7 @@ class UserProfileForm(forms.ModelForm):
             self.fields['first_name'].initial = user.first_name
             self.fields['last_name'].initial = user.last_name
 
-        # bootstrap styles
         for field in self.fields.values():
             if not isinstance(field.widget, forms.FileInput):
                 field.widget.attrs.update({'class': 'form-control'})
+
