@@ -32,4 +32,3 @@ class UserProfileForm(forms.ModelForm):
         for field in self.fields.values():
             if not isinstance(field.widget, forms.FileInput):
                 field.widget.attrs.update({'class': 'form-control'})
-
