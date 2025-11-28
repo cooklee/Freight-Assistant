@@ -1,5 +1,5 @@
-from django.db import models
 from django.contrib.auth.models import User
+from django.db import models
 
 
 def profile_upload_path(instance, filename):
@@ -7,6 +7,10 @@ def profile_upload_path(instance, filename):
 
 
 class UserProfile(models.Model):
+    """
+    Extra profile data for a system user. Contains contact
+    details, social links and optional profile image.
+    """
     user = models.OneToOneField(
         User,
         on_delete=models.CASCADE,

@@ -6,6 +6,10 @@ from apps.drivers.models import Driver
 
 
 class TransportOrder(models.Model):
+    """
+    Represents a single transport job. Stores route details,
+    pricing, assigned carrier and assigned driver(s).
+    """
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
     carrier = models.ForeignKey(Carrier, on_delete=models.CASCADE)
 

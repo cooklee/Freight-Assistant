@@ -1,6 +1,11 @@
 from django.db import models
 
+
 class Carrier(models.Model):
+    """
+    Transport company responsible for executing freight orders.
+    Contains basic business and contact details.
+    """
     name = models.CharField(max_length=150)
     nip = models.CharField(max_length=10, unique=True)
     address = models.CharField(max_length=150, blank=True)
@@ -9,4 +14,3 @@ class Carrier(models.Model):
 
     def __str__(self):
         return self.name
-

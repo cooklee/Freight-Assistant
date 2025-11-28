@@ -2,6 +2,10 @@ from django.db import models
 
 
 class Customer(models.Model):
+    """
+    Client who orders transport services. Stores key company
+    information used when creating transport orders.
+    """
     name = models.CharField(max_length=150)
     nip = models.CharField(max_length=10, unique=True)
     address = models.CharField(max_length=150)
@@ -12,8 +16,11 @@ class Customer(models.Model):
         return self.name
 
 
-
 class CustomerBranch(models.Model):
+    """
+    Branch or office belonging to a customer. Stores the branch
+    name and address for more precise pickup or delivery details.
+    """
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
     name = models.CharField(max_length=150)
     address = models.CharField(max_length=200)
