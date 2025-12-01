@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="p-4">
+
+    <h1 class="text-3xl font-bold mb-4">Dashboard</h1>
+    <p class="text-gray-600 mb-6">
+        Welcome to your Freight Assistant dashboard.
+    </p>
+
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+        <div class="card bg-base-100 shadow">
+            <div class="card-body">
+                <h2 class="card-title">Transport Orders</h2>
+                <p>Manage, add and track transport orders.</p>
+                <a href="#" class="btn btn-primary btn-sm mt-2">Open</a>
+            </div>
+        </div>
+
+        <div class="card bg-base-100 shadow">
+            <div class="card-body">
+                <h2 class="card-title">Messages</h2>
+                <p>Chat with drivers and coworkers in your company.</p>
+                <a href="#" class="btn btn-primary btn-sm mt-2">Open</a>
+            </div>
+        </div>
+
+        <div class="card bg-base-100 shadow">
+            <div class="card-body">
+                <h2 class="card-title">Drivers</h2>
+                <p>View, manage and assign drivers to routes.</p>
+                <a href="#" class="btn btn-primary btn-sm mt-2">Open</a>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}
