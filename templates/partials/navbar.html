@@ -7,7 +7,7 @@
                  viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                       d="M4 6h16M4 12h16M4 18h16"/>
-                </svg>
+            </svg>
         </label>
     </div>
 
@@ -17,23 +17,30 @@
 
     <div class="flex-none">
         {% if user.is_authenticated %}
-            <div class="dropdown dropdown-end">
-                <label tabindex="0" class="btn btn-ghost btn-circle avatar">
-                    <div class="w-10 rounded-full">
-                        {% if user.userprofile.profile_image %}
-                            <img src="{{ user.userprofile.profile_image.url }}">
-                        {% else %}
-                            <img src="{% static 'default-avatar.png' %}">
-                        {% endif %}
-                    </div>
-                </label>
-                <ul tabindex="0"
-                    class="dropdown-content z-[999] menu p-2 shadow bg-base-100 rounded-box w-52">
-                    <li><a href="{% url 'profile' %}">My Profile</a></li>
-                    <li><a href="{% url 'profile' %}#change-password">Change Password</a></li>
-                    <li><a href="{% url 'logout' %}">Sign Out</a></li>
-                </ul>
+            <div class="flex items-center gap-4">
+                <div class="text-sm text-gray-600">
+                    {{ user.first_name }} {{ user.last_name }}
+                </div>
+
+                <div class="dropdown dropdown-end">
+                    <label tabindex="0" class="btn btn-ghost btn-circle avatar">
+                        <div class="w-10 rounded-full">
+                            {% if user.profile.profile_image %}
+                                <img src="{{ user.profile.profile_image.url }}">
+                            {% else %}
+                                <img src="{% static 'default-avatar.png' %}">
+                            {% endif %}
+                        </div>
+                    </label>
+                    <ul tabindex="0"
+                        class="dropdown-content z-[999] menu p-2 shadow bg-base-100 rounded-box w-52">
+                        <li><a href="{% url 'profile' %}">My Profile</a></li>
+                        <li><a href="{% url 'profile' %}#change-password">Change Password</a></li>
+                        <li><a href="{% url 'logout' %}">Sign Out</a></li>
+                    </ul>
+                </div>
             </div>
+
         {% else %}
             <a href="{% url 'login' %}" class="btn btn-sm btn-primary">Log in</a>
         {% endif %}
