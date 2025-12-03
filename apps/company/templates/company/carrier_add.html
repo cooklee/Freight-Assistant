@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Add Carrier{% endblock %}
+
+{% block content %}
+
+    <div class="max-w-2xl w-full mx-auto bg-base-100 p-8 rounded-xl shadow">
+        <h1 class="text-2xl font-bold mb-6">Add Carrier</h1>
+
+        <form method="post" novalidate>
+            {% csrf_token %}
+
+            <div class="form-control mb-4">
+                <label class="label">
+                    <span class="label-text">Carrier Name</span>
+                </label>
+                {{ form.name }}
+            </div>
+
+            <div class="form-control mb-4">
+                <label class="label">
+                    <span class="label-text">NIP (10 digits)</span>
+                </label>
+                {{ form.nip }}
+            </div>
+
+            <div class="form-control mb-4">
+                <label class="label">
+                    <span class="label-text">Address</span>
+                </label>
+                {{ form.address }}
+            </div>
+
+            <div class="form-control mb-4">
+                <label class="label">
+                    <span class="label-text">Email</span>
+                </label>
+                {{ form.email }}
+            </div>
+
+            <div class="form-control mb-4">
+                <label class="label">
+                    <span class="label-text">Phone (digits only)</span>
+                </label>
+                {{ form.phone }}
+            </div>
+
+            <button class="btn btn-primary w-full mt-4">Add Carrier</button>
+        </form>
+    </div>
+
+{% endblock %}
