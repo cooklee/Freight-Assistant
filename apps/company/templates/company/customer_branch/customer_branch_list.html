@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block title %}Customer Branches{% endblock %}
+
+{% block content %}
+
+
+<div class="flex justify-end mb-4">
+    <a href="#" class="btn btn-primary">
+        + Add Customer Branch
+    </a>
+</div>
+
+
+<div class="max-w-4xl mx-auto">
+
+    <h1 class="text-3xl font-bold mb-2">Customer Branches</h1>
+
+    <p class="text-sm text-gray-500 mb-6">
+        List of all customer branches requiring internal transport.
+    </p>
+
+    <div class="space-y-4">
+        {% for branch in branches %}
+            <div class="bg-base-100 p-4 rounded shadow-sm border border-base-300">
+                <p class="font-semibold text-lg">{{ branch.name }}</p>
+                <p class="text-sm text-gray-600">{{ branch.address }}</p>
+
+                <div class="mt-3 space-x-2 ">
+                    <a href="{% url 'branch-detail' branch.id %}" class="btn btn-sm">Details</a>
+                    <a href="{% url 'branch-update' branch.id %}" class="btn btn-sm btn-primary">Edit</a>
+                    <a href="{% url 'branch-delete' branch.id %}" class="btn btn-sm btn-warning">Delete</a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+</div>
+
+{% endblock %}

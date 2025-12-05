@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}Customer Branch Detail{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto bg-base-100 p-6 rounded-xl shadow">
+
+    <h2 class="text-2xl font-bold mb-4">{{ branch.name }}</h2>
+
+    <div class="space-y-2">
+        <p><span class="font-semibold">Address:</span> {{ branch.address }}</p>
+    </div>
+
+    <div class="space-x-2 mt-4">
+        <a href="{% url 'branch-update' branch.id %}" class="btn btn-primary">Edit</a>
+        <a href="{% url 'branch-delete' branch.id %}" class="btn btn-warning">Delete</a>
+        <a href="{% url 'branch-list' %}" class="btn">Back</a>
+    </div>
+
+</div>
+{% endblock %}
