@@ -1,1 +1,1 @@
-from .carrier import CarrierAddForm
+from .carrier import CarrierForm

@@ -2,7 +2,7 @@ from django import forms
 from apps.company.models import Carrier
 
 
-class CarrierAddForm(forms.ModelForm):
+class CarrierForm(forms.ModelForm):
 
     class Meta:
         model = Carrier

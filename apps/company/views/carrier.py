@@ -1,21 +1,33 @@
 from django.shortcuts import render, redirect
 from django.views import View
 
-from ..forms import CarrierAddForm
+from ..forms import CarrierForm
+from ..models import Carrier
 
 
 class CarrierAddView(View):
-    template_name = 'company/carrier_add.html'
 
     def get(self, request):
-        form = CarrierAddForm()
-        return render(request, self.template_name, {'form': form})
+        form = CarrierForm()
+        return render(request, 'company/carrier_add.html', {'form': form})
 
     def post(self, request):
-        form = CarrierAddForm(request.POST)
+        form = CarrierForm(request.POST)
 
         if form.is_valid():
             form.save()
             return redirect('dashboard')
 
-        return render(request, self.template_name, {'form': form})
+        return render(request, 'company/carrier_add.html', {'form': form})
+
+
+class CarrierDetailView(View):
+    def get(self, request):
+        carriers = Carrier.objects.all()
+        return render(request, 'company/carrier_detail.html', {'carriers': carriers})
+
+
+class CarrierUpdateView(View):
+    def get(self, request, carrier_id):
+        carrier = Carrier.objects.get(id=carrier_id)
+        form = CarrierForm(instance=carrier)
