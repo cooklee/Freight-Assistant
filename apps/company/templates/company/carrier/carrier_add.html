@@ -45,6 +45,17 @@
                 </label>
                 {{ form.phone }}
             </div>
+            {% if form.errors %}
+                <div class="alert alert-error mb-4">
+                    <span class="font-semibold">Form contains errors:</span>
+                    <ul class="mt-2 text-sm">
+                        {% for field, errors in form.errors.items %}
+                            <li><strong>{{ field }}</strong>: {{ errors.0 }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+
 
             <button class="btn btn-primary w-full mt-4">Add Carrier</button>
         </form>
