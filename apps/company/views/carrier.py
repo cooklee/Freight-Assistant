@@ -8,14 +8,14 @@ from ..models import Carrier
 class CarrierListView(View):
     def get(self, request):
         carriers = Carrier.objects.all()
-        return render(request, 'company/carrier_list.html', {'carriers': carriers})
+        return render(request, 'company/carrier/carrier_list.html', {'carriers': carriers})
 
 
 class CarrierAddView(View):
 
     def get(self, request):
         form = CarrierForm()
-        return render(request, 'company/carrier_add.html', {'form': form})
+        return render(request, 'company/carrier/carrier_add.html', {'form': form})
 
     def post(self, request):
         form = CarrierForm(request.POST)
@@ -23,7 +23,7 @@ class CarrierAddView(View):
         if form.is_valid():
             form.save()
             return redirect('dashboard')
-        return render(request, 'company/carrier_add.html', {'form': form})
+        return render(request, 'company/carrier/carrier_add.html', {'form': form})
 
 
 class CarrierDetailView(View):
@@ -31,7 +31,7 @@ class CarrierDetailView(View):
         carrier = get_object_or_404(
             Carrier, id=carrier_id
         )
-        return render(request, 'company/carrier_detail.html', {'carrier': carrier})
+        return render(request, 'company/carrier/carrier_detail.html', {'carrier': carrier})
 
 
 class CarrierUpdateView(View):
@@ -40,7 +40,7 @@ class CarrierUpdateView(View):
             Carrier, id=carrier_id
         )
         form = CarrierForm(instance=carrier)
-        return render(request, 'company/carrier_update.html', {'form': form})
+        return render(request, 'company/carrier/carrier_update.html', {'form': form})
 
     def post(self, request, carrier_id):
         carrier = get_object_or_404(
@@ -50,7 +50,7 @@ class CarrierUpdateView(View):
         if form.is_valid():
             form.save()
             return redirect('dashboard')
-        return render(request, 'company/carrier_update.html', {'form': form})
+        return render(request, 'company/carrier/carrier_update.html', {'form': form})
 
 
 class CarrierDeleteView(View):
@@ -58,7 +58,7 @@ class CarrierDeleteView(View):
         carrier = get_object_or_404(
             Carrier, id=carrier_id
         )
-        return render(request, 'company/carrier_delete.html', {'carrier': carrier})
+        return render(request, 'company/carrier/carrier_delete.html', {'carrier': carrier})
 
     def post(self, request, carrier_id):
         carrier = get_object_or_404(
