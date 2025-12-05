@@ -21,7 +21,7 @@ class CustomerBranch(models.Model):
     Branch or office belonging to a customer. Stores the branch
     name and address for more precise pickup or delivery details.
     """
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name='branches')
     name = models.CharField(max_length=150)
     address = models.CharField(max_length=200)
 
