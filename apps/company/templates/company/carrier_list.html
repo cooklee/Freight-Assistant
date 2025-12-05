@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block title %}Carriers{% endblock %}
+
+{% block content %}
+
+
+<div class="flex justify-end mb-4">
+    <a href="{% url 'carrier-add' %}" class="btn btn-primary">
+        + Add Carrier
+    </a>
+</div>
+
+
+<div class="max-w-4xl mx-auto">
+
+    <h1 class="text-3xl font-bold mb-2">Carriers</h1>
+
+    <p class="text-sm text-gray-500 mb-6">
+        List of all transportation providers registered in the system.
+    </p>
+
+    <div class="space-y-4">
+        {% for carrier in carriers %}
+            <div class="bg-base-100 p-4 rounded shadow-sm border border-base-300">
+                <p class="font-semibold text-lg">{{ carrier.name }}</p>
+                <p class="text-sm text-gray-600">NIP: {{ carrier.nip }}</p>
+                <p class="text-sm text-gray-600">{{ carrier.address }}</p>
+
+                <div class="mt-3 space-x-2 ">
+                    <a href="{% url 'carrier-detail' carrier.id %}" class="btn btn-sm">Details</a>
+                    <a href="{% url 'carrier-update' carrier.id %}" class="btn btn-sm btn-primary">Edit</a>
+                    <a href="{% url 'carrier-delete' carrier.id %}" class="btn btn-sm btn-warning">Delete</a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+</div>
+
+{% endblock %}

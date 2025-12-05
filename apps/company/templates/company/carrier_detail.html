@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}Carrier Detail{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto bg-base-100 p-6 rounded-xl shadow">
+
+    <h2 class="text-2xl font-bold mb-4">{{ carrier.name }}</h2>
+
+    <div class="space-y-2">
+        <p><span class="font-semibold">NIP:</span> {{ carrier.nip }}</p>
+        <p><span class="font-semibold">Address:</span> {{ carrier.address }}</p>
+        <p><span class="font-semibold">Email:</span> {{ carrier.email }}</p>
+        <p><span class="font-semibold">Phone:</span> {{ carrier.phone }}</p>
+    </div>
+
+    <div class="space-x-2 mt-4">
+        <a href="{% url 'carrier-update' carrier.id %}" class="btn btn-primary">Edit</a>
+        <a href="{% url 'carrier-delete' carrier.id %}" class="btn btn-warning">Delete</a>
+        <a href="{% url 'carrier-list' %}" class="btn">Back</a>
+    </div>
+
+</div>
+{% endblock %}
