@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}Delete Customer{% endblock %}
+
+{% block content %}
+<div class="max-w-xl mx-auto bg-base-100 p-6 rounded-xl shadow text-center">
+
+    <h2 class="text-2xl font-bold mb-4">Delete Customer</h2>
+
+    <p class="mb-6">
+        Are you sure you want to delete
+        <span class="font-semibold">{{ customer.name }}</span>?
+    </p>
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="flex justify-center gap-4">
+            <button type="submit" class="btn btn-error">Delete</button>
+            <a href="{% url 'customer-list' %}" class="btn">Cancel</a>
+        </div>
+    </form>
+
+</div>
+{% endblock %}
