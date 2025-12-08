@@ -3,6 +3,7 @@ from django.views import View
 
 from ..forms import CarrierForm
 from ..models import Carrier
+from ...drivers.models import Driver
 
 
 class CarrierListView(View):
@@ -31,7 +32,8 @@ class CarrierDetailView(View):
         carrier = get_object_or_404(
             Carrier, id=carrier_id
         )
-        return render(request, 'company/carrier/carrier_detail.html', {'carrier': carrier})
+        drivers = Driver.objects.filter(carrier=carrier)
+        return render(request, 'company/carrier/carrier_detail.html', {'carrier': carrier, 'drivers': drivers})
 
 
 class CarrierUpdateView(View):
