@@ -3,22 +3,62 @@
 {% block title %}Carrier Detail{% endblock %}
 
 {% block content %}
-<div class="max-w-3xl mx-auto bg-base-100 p-6 rounded-xl shadow">
+    <div class="max-w-3xl mx-auto bg-base-100 p-6 rounded-xl shadow">
 
-    <h2 class="text-2xl font-bold mb-4">{{ carrier.name }}</h2>
+        <h2 class="text-2xl font-bold mb-4">{{ carrier.name }}</h2>
 
-    <div class="space-y-2">
-        <p><span class="font-semibold">NIP:</span> {{ carrier.nip }}</p>
-        <p><span class="font-semibold">Address:</span> {{ carrier.address }}</p>
-        <p><span class="font-semibold">Email:</span> {{ carrier.email }}</p>
-        <p><span class="font-semibold">Phone:</span> {{ carrier.phone }}</p>
+        <div class="space-y-2">
+            <p><span class="font-semibold">NIP:</span> {{ carrier.nip }}</p>
+            <p><span class="font-semibold">Address:</span> {{ carrier.address }}</p>
+            <p><span class="font-semibold">Email:</span> {{ carrier.email }}</p>
+            <p><span class="font-semibold">Phone:</span> {{ carrier.phone }}</p>
+        </div>
+
+        <div class="space-x-2 mt-4">
+            <a href="{% url 'carrier-update' carrier.id %}" class="btn btn-primary">Edit</a>
+            <a href="{% url 'carrier-delete' carrier.id %}" class="btn btn-warning">Delete</a>
+            <a href="{% url 'carrier-list' %}" class="btn">Back</a>
+        </div>
+
+        <div class="items-center justify-between mb-3">
+            <h3 class="text-xl font-semibold">Drivers</h3>
+
+            <a href="{% url 'driver-add' carrier.id %}"
+               class="btn btn-sm btn-primary">
+                + Add Driver
+            </a>
+        </div>
+
+        {% if drivers %}
+            <div class="space-y-3">
+                {% for driver in drivers %}
+                    <div class="bg-base-200 p-4 rounded border border-base-300">
+                        <div class=" justify-between items-center">
+                            <div>
+                                <p class="font-semibold">{{ driver.first_name }} {{ driver.last_name }}</p>
+                                <p class="text-sm text-gray-600">{{ driver.phone }}</p>
+                            </div>
+
+                            <div class="space-x-2">
+                                <a href="{% url 'driver-update' driver.id %}"
+                                   class="btn btn-sm btn-primary">
+                                    Edit
+                                </a>
+
+                                <a href="{% url 'driver-delete' driver.id %}"
+                                   class="btn btn-sm btn-warning">
+                                    Delete
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-gray-500 italic">
+                This carrier has no registered drivers.
+            </p>
+        {% endif %}
+
     </div>
-
-    <div class="space-x-2 mt-4">
-        <a href="{% url 'carrier-update' carrier.id %}" class="btn btn-primary">Edit</a>
-        <a href="{% url 'carrier-delete' carrier.id %}" class="btn btn-warning">Delete</a>
-        <a href="{% url 'carrier-list' %}" class="btn">Back</a>
-    </div>
-
-</div>
 {% endblock %}
