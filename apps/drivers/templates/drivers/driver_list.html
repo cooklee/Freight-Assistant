@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block title %}Driver{% endblock %}
+
+{% block content %}
+
+
+<div class="flex justify-end mb-4">
+    <a href="#" class="btn btn-primary">
+        + Add Driver
+    </a>
+</div>
+
+
+<div class="max-w-4xl mx-auto">
+
+    <h1 class="text-3xl font-bold mb-2">Driver</h1>
+
+    <p class="text-sm text-gray-500 mb-6">
+        List of all drivers.
+    </p>
+
+    <div class="space-y-4">
+        {% for driver in drivers %}
+            <div class="bg-base-100 p-4 rounded shadow-sm border border-base-300">
+                <p class="font-semibold text-lg">{{ driver.first_name }} {{ driver.last_name }}</p>
+                <p class="text-sm text-gray-600">NIP: {{ driver.carrier }}</p>
+
+
+                <div class="mt-3 space-x-2 ">
+                    <a href="{% url 'driver-detail' driver.id %}" class="btn btn-sm">Details</a>
+                    <a href="{% url 'driver-update' driver.id %}" class="btn btn-sm btn-primary">Edit</a>
+                    <a href="{% url 'driver-delete' driver.id %}" class="btn btn-sm btn-warning">Delete</a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+</div>
+
+{% endblock %}

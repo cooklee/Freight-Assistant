@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}Driver Detail{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto bg-base-100 p-6 rounded-xl shadow">
+
+    <h2 class="text-2xl font-bold mb-4">{{ driver }}</h2>
+
+    <div class="space-y-2">
+        <p><span class="font-semibold">Driver:</span> {{ driver.first_name }} {{ driver.last_name }}</p>
+        <p><span class="font-semibold">Phone number:</span> {{ driver.phone }}</p>
+    </div>
+
+    <div class="space-x-2 mt-4">
+        <a href="{% url 'driver-update' driver.id %}" class="btn btn-primary">Edit</a>
+        <a href="{% url 'driver-delete' driver.id %}" class="btn btn-warning">Delete</a>
+        <a href="{% url 'carrier-detail' driver.carrier.id %}" class="btn">Back</a>
+    </div>
+
+</div>
+{% endblock %}
