@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1 class="text-3xl font-bold mb-6">Start new conversation</h1>
+
+<form method="post" class="space-y-6">
+    {% csrf_token %}
+
+    <div>
+        <label class="block text-sm font-medium mb-1">Recipient</label>
+        {{ form.user2 }}
+    </div>
+
+    <div>
+        <label class="block text-sm font-medium mb-1">Subject</label>
+        {{ form.subject }}
+    </div>
+
+    <div>
+        <label class="block text-sm font-medium mb-1">Write your first message…</label>
+        {{ form.text }}
+    </div>
+
+    <button class="btn btn-primary">Create</button>
+</form>
+{% endblock %}

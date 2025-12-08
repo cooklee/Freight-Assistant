@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Conversation{% endblock %}
+
+{% block content %}
+
+<a href="{% url 'conversation-list' %}" class="btn mb-4">← Back</a>
+
+<h1 class="text-2xl font-bold mb-2">{{ conversation.subject|default:"Conversation" }}</h1>
+<p class="text-sm opacity-70 mb-6">
+    Participants:
+    {% for u in conversation.participants %}
+        {{ u.first_name }} {{ u.last_name }}{% if not forloop.last %}, {% endif %}
+    {% endfor %}
+</p>
+
+<div class="space-y-4 mb-10">
+
+    {% for msg in messages %}
+        {% if msg.sender == request.user %}
+            <div class="flex justify-end">
+                <div class="max-w-md bg-primary text-primary-content p-4 rounded-2xl shadow">
+                    <div class="text-xs opacity-70 text-right">
+                        {{ msg.timestamp|date:"Y-m-d H:i" }}
+                    </div>
+                    <p class="font-semibold">{{ msg.sender.first_name }} {{ msg.sender.last_name }}</p>
+                    <p class="p-2">{{ msg.text }}</p>
+                </div>
+            </div>
+
+        {% else %}
+
+            <div class="flex justify-start">
+                <div class="max-w-md bg-base-100 p-4 rounded-2xl shadow">
+                    <div class="text-xs opacity-70">
+                        {{ msg.timestamp|date:"Y-m-d H:i" }}
+                    </div>
+                    <p class=" font-semibold">{{ msg.sender.first_name }} {{ msg.sender.last_name }}</p>
+                    <p class="p-2">{{ msg.text }}</p>
+                </div>
+            </div>
+        {% endif %}
+    {% endfor %}
+
+</div>
+<div class="flex justify-end mt-6">
+<form method="post" class="">
+    {% csrf_token %}
+    <label class="form-control w-full">
+        <textarea name="text" class="textarea textarea-neutral w-full min-h-32"
+                  placeholder="Write a message..." required></textarea>
+    </label>
+
+    <button class="btn btn-primary mt-3 ">Send</button>
+</form>
+</div>
+{% endblock %}

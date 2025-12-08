@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Conversations{% endblock %}
+
+{% block content %}
+
+    <div class=" items-center justify-between mb-6">
+        <h1 class="text-3xl font-bold">Conversations</h1>
+        <a href="{% url 'conversation-add' %}" class="btn btn-primary">New conversation</a>
+    </div>
+
+    <div class="space-y-4">
+
+        {% if conversations %}
+            {% for convo in conversations %}
+                <a href="{% url 'conversation-detail' convo.id %}"
+                   class="block bg-base-100 shadow-sm rounded-xl p-5 hover:bg-base-300 transition">
+
+                    <div class="static justify-between">
+                        <h2 class="text-xl font-semibold">{{ convo.subject|default:"(No subject)" }}</h2>
+
+
+                    </div>
+
+                    <p class="text-sm opacity-70">
+                        With:
+                        {% for u in convo.participants %}
+                            {% if u != request.user %}
+                                {{ u.first_name }} {{ u.last_name }}
+                            {% endif %}
+                        {% endfor %}
+                    </p>
+
+                    {% if convo.messages.last %}
+                        <p class="mt-2 text-sm line-clamp-2 opacity-80">
+                            <span class="font-semibold">{{ convo.messages.last.sender.first_name }} {{ convo.messages.last.sender.last_name }}:</span>
+                            {{ convo.messages.last.text }}
+                        </p>
+                        <span class="text-sm opacity-70">
+                        {{ convo.updated_at|date:"Y-m-d H:i" }}
+                    </span>
+                    {% endif %}
+
+                </a>
+            {% endfor %}
+
+        {% else %}
+            <div class="text-center opacity-70 mt-10">
+                No conversations yet.
+            </div>
+        {% endif %}
+
+    </div>
+
+{% endblock %}
