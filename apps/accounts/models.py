@@ -37,3 +37,11 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return f"{self.user.username} Profile"
+
+class AppUser(User):
+    class Meta:
+        proxy = True
+
+    def __str__(self):
+        full_name = f"{self.first_name} {self.last_name}".strip()
+        return full_name if full_name else self.username
