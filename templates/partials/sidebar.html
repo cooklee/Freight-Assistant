@@ -13,12 +13,12 @@
         <li><a href="{% url 'carrier-list' %}">Carriers</a></li>
         <li><a href="{% url 'customer-list' %}">Customer</a></li>
         <li><a href="{% url 'driver-list' %}">Drivers</a></li>
-        <li><a href="#">Routes</a></li>
-        <li><a href="#">Stops</a></li>
-        <li><a href="#">Calculations</a></li>
+        <li><a href="{% url 'route-list' %}">Routes</a></li>
+        <li><a href="{% url 'calculation-list' %}">Calculations</a></li>
+        <li><a href="{% url 'order-list' %}">Transport Orders</a></li>
 
         <li class="menu-title">Messaging</li>
-        <li><a href="#">Messages</a></li>
+        <li><a href="{% url 'conversation-list' %}">Messages</a></li>
 
         <li class="menu-title">Extras</li>
         <li><a href="#">Leasing</a></li>
