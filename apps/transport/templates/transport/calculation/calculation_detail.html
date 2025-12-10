@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}Calculation {{ calculation.route.name }}{% endblock %}
+
+{% block content %}
+    <div class="static justify-between items-center mb-6">
+        <h1 class="text-3xl font-bold">Calculation Details</h1>
+
+        <div class="space-x-2">
+            <a href="{% url 'calculation-update' calculation.id %}" class="btn btn-warning">Edit</a>
+            <a href="{% url 'calculation-delete' calculation.id %}" class="btn btn-error">Delete</a>
+        </div>
+    </div>
+
+    <div class="card bg-base-100 shadow-md mb-6">
+        <div class="card-body">
+            <h2 class="card-title">{{ calculation.route.name }}</h2>
+
+            <p><strong>Date:</strong> {{ calculation.date }}</p>
+            <p><strong>Carrier:</strong> {{ calculation.carrier.name }}</p>
+            <p><strong>Driver 1:</strong> {{ calculation.driver_1 }}</p>
+            <p><strong>Driver 2:</strong> {{ calculation.driver_2|default:"None" }}</p>
+
+            <hr class="my-3">
+
+            <p><strong>Total km:</strong> {{ calculation.total_km }}</p>
+            <p><strong>Drive time:</strong> {{ calculation.total_drive_time_minutes }} min</p>
+            <p><strong>Break time:</strong> {{ calculation.total_break_time_minutes }} min</p>
+            <p><strong>Rest time:</strong> {{ calculation.total_rest_time_minutes }} min</p>
+            <p><strong>Work time:</strong> {{ calculation.total_other_work_time_minutes }} min</p>
+
+            <p class="mt-3"><strong>Total work (hours):</strong> {{ total_work_hours|floatformat:2 }}</p>
+        </div>
+    </div>
+
+    <h2 class="text-2xl font-semibold mb-2">Schedule</h2>
+
+    <div class="card bg-base-100 shadow-md">
+        <div class="card-body">
+            {% if schedule_rows %}
+                <ul class="list-disc pl-6 space-y-1">
+                    {% for row in schedule_rows %}
+                        <li>{{ row }}</li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="text-gray-600">No schedule data.</p>
+            {% endif %}
+        </div>
+    </div>
+
+{% endblock %}

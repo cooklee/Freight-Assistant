@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %}Calculations{% endblock %}
+
+{% block content %}
+    <div class="static justify-between items-center mb-6">
+        <h1 class="text-3xl font-bold">Calculations</h1>
+        <a href="{% url 'calculation-create' %}" class="btn btn-primary">New Calculation</a>
+    </div>
+
+    {% if calculations %}
+        <div class="space-y-4">
+            {% for c in calculations %}
+                <a href="{% url 'calculation-detail' c.id %}" class="block">
+                    <div class="card bg-base-100 shadow-md hover:shadow-xl transition-all">
+                        <div class="card-body">
+                            <h2 class="card-title">{{ c.route.name }} ({{ c.date }})</h2>
+                            <p>
+                                <strong>Carrier:</strong> {{ c.carrier.name }} <br>
+                                <strong>Distance:</strong> {{ c.total_km }} km <br>
+                                <strong>Drive time:</strong> {{ c.total_drive_time_minutes|default:0 }} min
+                            </p>
+                        </div>
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="text-center text-gray-600 mt-8">No calculations yet.</p>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block title %}{{ update|yesno:"Update Calculation,New Calculation" }}{% endblock %}
+
+{% block content %}
+    <div class="max-w-2xl w-full mx-auto bg-base-100 p-8 rounded-xl shadow">
+        <h1 class="text-3xl font-bold mb-6">
+            {{ update|yesno:"Update Calculation,New Calculation" }}
+        </h1>
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <div class="space-y-4">
+                {{ form.non_field_errors }}
+
+                {% for field in form %}
+                    <div>
+                        <label class="label">
+                            <span class="label-text font-semibold">{{ field.label }}</span>
+                        </label>
+                        {{ field }}
+                        {% if field.errors %}
+                            <p class="text-red-500 text-sm mt-1">{{ field.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div class="mt-6 flex space-x-3">
+                <button class="btn btn-primary" type="submit">
+                    {{ update|yesno:"Save changes,Create" }}
+                </button>
+
+                <a href="{% url 'calculation-list' %}" class="btn btn-ghost">Cancel</a>
+            </div>
+        </form>
+    </div>
+{% endblock %}
+{% block extra_js %}
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const carrierSelect = document.getElementById("id_carrier");
+            const driver1Select = document.getElementById("id_driver_1");
+            const driver2Select = document.getElementById("id_driver_2");
+
+            const driver2Container = driver2Select.closest("div");
+            driver2Container.style.display = "none";
+
+            function clearDrivers() {
+                driver1Select.innerHTML = "<option value=''>Select driver</option>";
+                driver2Select.innerHTML = "<option value=''>Select co-driver</option>";
+                driver2Container.style.display = "none";
+            }
+
+            carrierSelect.addEventListener("change", function () {
+                const carrierId = this.value;
+                clearDrivers();
+
+                if (!carrierId) return;
+
+                fetch(`/orders/ajax/drivers/${carrierId}/`)
+                    .then(res => res.json())
+                    .then(data => {
+                        clearDrivers(false);
+
+                        data.drivers.forEach(d => {
+                            driver1Select.appendChild(new Option(d.name, d.id));
+                            driver2Select.appendChild(new Option(d.name, d.id));
+                        });
+                    });
+            });
+
+            driver1Select.addEventListener("change", function () {
+                Array.from(driver2Select.options).forEach(opt => {
+                    opt.disabled = (opt.value === driver1Select.value);
+                });
+                driver2Container.style.display = this.value ? "block" : "none";
+            });
+
+            driver2Select.addEventListener("change", function () {
+                Array.from(driver1Select.options).forEach(opt => {
+                    opt.disabled = (opt.value === driver2Select.value);
+                });
+            });
+
+            if (carrierSelect.value) {
+                carrierSelect.dispatchEvent(new Event("change"));
+            }
+        });
+    </script>
+{% endblock %}
+
