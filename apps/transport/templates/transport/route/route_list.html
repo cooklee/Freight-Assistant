@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block title %}Routes{% endblock %}
+
+{% block content %}
+<div class="my-10">
+    <div class="static justify-between items-center mb-6">
+        <h1 class="text-3xl font-bold">Routes</h1>
+        <a href="{% url 'route-with-stops' %}" class="btn btn-primary">
+            + New route
+        </a>
+    </div>
+
+    {% if routes %}
+        <div class="card bg-base-100 shadow-xl">
+            <div class="card-body p-0">
+                <div class="overflow-x-auto">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Name</th>
+                                <th>Stops</th>
+                                <th>Created</th>
+                                <th class="text-right pr-6">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for route in routes %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td class="font-medium">
+                                    <a href="{% url 'route-detail' route.id %}" class="link link-hover">
+                                        {{ route.name }}
+                                    </a>
+                                </td>
+                                <td>
+                                    {{ route.total_stops }}
+                                </td>
+                                <td>
+                                    {{ route.created_at|date:"Y-m-d H:i" }}
+                                </td>
+                                <td>
+                                    <div class="static justify-end gap-2 p-4">
+                                        <a href="{% url 'route-detail' route.id %}" class="btn btn-sm">
+                                            Details
+                                        </a>
+                                        <a href="{% url 'route-update' route.id %}" class="btn btn-sm btn-primary">
+                                            Edit
+                                        </a>
+                                        <a href="{% url 'route-delete' route.id %}" class="btn btn-sm btn-warning">
+                                            Delete
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <div class="card bg-base-100 shadow-xl">
+            <div class="card-body">
+                <p class="text-lg">You don't have any routes yet.</p>
+                <p class="text-sm opacity-70 mb-4">
+                    Create your first route and attach stops to use it in calculations.
+                </p>
+                <a href="{% url 'route-create' %}" class="btn btn-primary">
+                    Create route
+                </a>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

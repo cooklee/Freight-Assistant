@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Update Route{% endblock %}
+
+{% block content %}
+    <div class="card bg-base-100 shadow-xl my-10">
+        <div class="card-body">
+            <h2 class="card-title text-2xl font-bold">Update Route</h2>
+
+            <form method="POST">
+                {% csrf_token %}
+
+                <div class="mb-6">
+                    <label class="label"><span class="label-text text-lg">Route name</span></label>
+                    {{ form.name }}
+                </div>
+
+                <hr class="my-6"/>
+
+                <h3 class="text-xl font-semibold mb-4">Stops</h3>
+
+                {{ formset.management_form }}
+
+                <div class="space-y-6" id="formset-container">
+                    {% for stop in stops %}
+                        <div class="border p-4 rounded-xl bg-base-200">
+                            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+
+                                <div>
+                                    <label class="label"><span class="label-text">Stop #</span></label>
+                                    {{ stop.stop_number }}
+                                </div>
+
+                                <div>
+                                    <label class="label"><span class="label-text">Type</span></label>
+                                    {{ stop.stop_type }}
+                                </div>
+
+                                <div>
+                                    <label class="label"><span class="label-text">Location</span></label>
+                                    {{ stop.location }}
+                                </div>
+
+                                <div class="flex items-center">
+                                    <label class="cursor-pointer static gap-3 items-center">
+
+                                        <span class="label-text">Driver participates:</span>
+                                        {% if stop.driver_participates %} Yes {% else %} No {% endif %}
+                                    </label>
+                                </div>
+
+                                {{ form.DELETE }}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <div class="static justify-between mt-6">
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                    <button type="button" id="add-form" class="btn">+ Add Stop</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+{% endblock %}
+
+
+{% block extra_js %}
+    <script>
+        let autocompleteFields = [];
+
+        function initializeAutocompleteFields() {
+            const inputs = document.querySelectorAll('.autocomplete-location');
+
+            inputs.forEach(input => {
+                if (!input.dataset.autocompleteAttached) {
+                    const autocomplete = new google.maps.places.Autocomplete(input, {
+                        types: ['(cities)']
+                    });
+
+                    input.dataset.autocompleteAttached = 'true';
+                    autocompleteFields.push(autocomplete);
+                }
+            });
+        }
+
+        function initGoogle() {
+            initializeAutocompleteFields();
+        }
+    </script>
+
+    <script src="https://maps.googleapis.com/maps/api/js?key={{ GOOGLE_MAPS_API_KEY }}&libraries=places&callback=initGoogle"
+            async defer></script>
+{% endblock %}
