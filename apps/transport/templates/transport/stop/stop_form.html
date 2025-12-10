@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+
+    <h1 class="text-2xl font-bold mb-6">{{ title }}</h1>
+
+    <div class="card bg-base-100 shadow-md p-6">
+
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="grid grid-cols-1 gap-4">
+                {% for field in form %}
+                    <div>
+                        <label class="label">
+                            <span class="label-text">{{ field.label }}</span>
+                        </label>
+                        {{ field }}
+                        {% if field.errors %}
+                            <p class="text-red-500 text-sm">{{ field.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div class="mt-6 flex gap-3">
+                <button class="btn btn-primary" type="submit">Save</button>
+                <a href="{% url 'stop-update' route.id %}" class="btn">Cancel</a>
+            </div>
+        </form>
+
+    </div>
+
+{% endblock %}
+
+{% block extra_js %}
+    <script>
+        let autocompleteFields = [];
+
+        function initializeAutocompleteFields() {
+            const inputs = document.querySelectorAll('.autocomplete-location');
+            inputs.forEach(input => {
+                if (!input.dataset.autocompleteAttached) {
+                    const a = new google.maps.places.Autocomplete(input, {
+                        types: ['(cities)']
+                    });
+                    input.dataset.autocompleteAttached = 'true';
+                    autocompleteFields.push(a);
+                }
+            });
+        }
+
+        function initGoogle() {
+            initializeAutocompleteFields();
+        }
+    </script>
+
+    <script src="https://maps.googleapis.com/maps/api/js?key={{ GOOGLE_MAPS_API_KEY }}&libraries=places&callback=initGoogle"
+            async defer></script>
+{% endblock %}
