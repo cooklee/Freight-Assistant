@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Delete Order{% endblock %}
+
+{% block content %}
+    <div class="my-10 max-w-xl mx-auto">
+        <div class="card bg-base-100 shadow-xl border border-error/20">
+            <div class="card-body">
+
+                <h2 class="card-title text-2xl font-bold text-error mb-4">
+                    Delete Order #{{ order.customer }}: {{ order.loading_place }} -> {{ order.unloading_place }}
+                </h2>
+
+                <p class="mb-4">
+                    Are you sure you want to permanently delete this transport order?
+                </p>
+
+                <p class="text-sm opacity-70 mb-6">
+                    This action cannot be undone.
+                </p>
+
+                <form method="POST" class=" gap-3">
+                    {% csrf_token %}
+                    <a href="{% url 'order-detail' order.id %}" class="btn">
+                        Cancel
+                    </a>
+                    <button class="btn btn-error" type="submit">Yes, delete</button>
+                </form>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}

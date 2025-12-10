@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+{% block title %}Transport Order{% endblock %}
+
+{% block content %}
+    <div class="card bg-base-100 shadow-xl my-10">
+        <div class="card-body">
+            <h2 class="card-title text-2xl font-bold mb-6">
+                {% if form.instance.id %}Update Order{% else %}Create Transport Order{% endif %}
+            </h2>
+
+            <form method="POST">
+                {% csrf_token %}
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                    {% for field in form %}
+                        <div>
+                            <label class="label">
+                                <span class="label-text text-lg">{{ field.label }}</span>
+                            </label>
+                            {{ field }}
+                            {% if field.errors %}
+                                <p class="text-error text-sm mt-1">{{ field.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+
+                </div>
+
+                <div class="flex justify-end gap-3 mt-8">
+                    <a href="{% url 'order-list' %}" class="btn">Cancel</a>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+{% endblock %}
+{% block extra_js %}
+    <script>
+        window.initialDriver1 = "{{ form.instance.driver_1.id|default:'' }}";
+        window.initialDriver2 = "{{ form.instance.driver_2.id|default:'' }}";
+    </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const carrierSelect = document.getElementById("id_carrier");
+            const driver1Select = document.getElementById("id_driver_1");
+            const driver2Select = document.getElementById("id_driver_2");
+
+            const driver2Container = driver2Select.closest("div");
+            driver2Container.style.display = "none";
+
+            function clearDrivers() {
+                driver1Select.innerHTML = "<option value=''>Select driver</option>";
+                driver2Select.innerHTML = "<option value=''>Select co-driver</option>";
+                driver2Container.style.display = "none";
+            }
+
+            carrierSelect.addEventListener("change", function () {
+                const carrierId = this.value;
+                clearDrivers();
+
+                if (!carrierId) return;
+
+                fetch(`/orders/ajax/drivers/${carrierId}/`)
+                    .then(res => res.json())
+                    .then(data => {
+                        clearDrivers();
+
+                        data.drivers.forEach(d => {
+                            const opt1 = new Option(d.name, d.id);
+                            const opt2 = new Option(d.name, d.id);
+
+                            if (String(d.id) === window.initialDriver1) {
+                                opt1.selected = true;
+                            }
+                            if (String(d.id) === window.initialDriver2) {
+                                opt2.selected = true;
+                                driver2Container.style.display = "block";
+                            }
+
+                            driver1Select.appendChild(opt1);
+                            driver2Select.appendChild(opt2);
+                        });
+
+                    });
+            });
+
+            driver1Select.addEventListener("change", function () {
+                Array.from(driver2Select.options).forEach(opt => {
+                    opt.disabled = (opt.value === driver1Select.value);
+                });
+                driver2Container.style.display = this.value ? "block" : "none";
+            });
+
+            driver2Select.addEventListener("change", function () {
+                Array.from(driver1Select.options).forEach(opt => {
+                    opt.disabled = (opt.value === driver2Select.value);
+                });
+            });
+
+            if (!window.initialDriver1 && !window.initialDriver2) {
+                if (carrierSelect.value) {
+                    carrierSelect.dispatchEvent(new Event("change"));
+                }
+            }
+
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block title %}Transport Orders{% endblock %}
+
+{% block content %}
+    <div class="my-10">
+        <div class="static justify-between items-center mb-6">
+            <h1 class="text-3xl font-bold">Transport Orders</h1>
+            <a href="{% url 'order-create' %}" class="btn btn-primary">
+                + New Order
+            </a>
+        </div>
+
+        {% if orders %}
+            <div class="card bg-base-100 shadow-xl">
+                <div class="card-body p-0">
+                    <div class="overflow-x-auto">
+                        <table class="table-zebra">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Customer</th>
+                                <th>Carrier</th>
+                                <th>Distance</th>
+                                <th>Profit</th>
+                                <th class="text-right pr-6">Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for o in orders %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td class="p-2 border">{{ o.customer.name }}</td>
+                                    <td class="p-2">{{ o.carrier.name }}</td>
+                                    <td class="p-2">{{ o.distance_km }} km</td>
+                                    <td class="p-2">{{ o.profit }} zł</td>
+                                    <td class="p-2">
+                                        <div class="flex justify-end gap-2 p-2">
+                                            <a href="{% url 'order-detail' o.id %}" class="btn btn-sm">
+                                                Details
+                                            </a>
+                                            <a href="{% url 'order-update' o.id %}" class="btn btn-sm btn-primary">
+                                                Edit
+                                            </a>
+                                            <a href="{% url 'order-delete' o.id %}" class="btn btn-sm btn-warning">
+                                                Delete
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="card bg-base-100 shadow-xl">
+                <div class="card-body">
+                    <p class="text-lg">No transport orders yet.</p>
+                    <p class="text-sm opacity-70 mb-4">
+                        Create your first order using routes, drivers and carriers.
+                    </p>
+                    <a href="{% url 'order-create' %}" class="btn btn-primary">
+                        Create order
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

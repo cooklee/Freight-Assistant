@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Order #{{ order.id }}{% endblock %}
+
+{% block content %}
+    <div class="card bg-base-100 shadow-xl my-10">
+        <div class="card-body">
+
+            <h2 class="card-title text-2xl font-bold mb-4">
+                Transport Order #{{ order.id }}
+            </h2>
+
+            <div class="static justify-end gap-2 mb-4">
+                <a href="{% url 'order-update' order.id %}" class="btn btn-primary btn-sm">Edit</a>
+                <a href="{% url 'order-delete' order.id %}" class="btn btn-warning btn-sm">Delete</a>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                <div class="space-y-2">
+                    <p><strong>Customer:</strong> {{ order.customer.name }}</p>
+                    <p><strong>Phone:</strong> {{ order.customer.phone }}</p>
+                </div>
+
+                <div class="space-y-2">
+                    <p><strong>Carrier:</strong> {{ order.carrier.name }}</p>
+                    <p><strong>Phone:</strong> {{ order.carrier.phone }}</p>
+                    <p><strong>Driver:</strong> {{ order.driver_1 }}</p>
+                    <p><strong>Phone:</strong> {{ order.driver_1.phone }}</p>
+                    {% if order.driver_2 %}
+                        <p><strong>Co-Driver:</strong> {{ order.driver_2 }}</p>
+                        <p><strong>Phone:</strong> {{ order.driver_2.phone }}</p>
+                    {% endif %}
+                </div>
+
+
+                <div class="space-y-2">
+                    <p><strong>Price for customer:</strong> {{ order.price_for_customer }} zł</p>
+                    <p><strong>Carrier cost:</strong> {{ order.carrier_cost }} zł</p>
+                    <p><strong>Profit:</strong> <span class="font-bold">{{ order.profit }} zł</span></p>
+                </div>
+
+                <div class="space-y-2">
+                    <p><strong>Loading place:</strong> {{ order.loading_place }}</p>
+                    <p><strong>Unloading place:</strong> {{ order.unloading_place }}</p>
+                    <p><strong>Distance:</strong> {{ order.distance_km }} km</p>
+                    <p><strong>Rate per km:</strong> {{ order.rate_per_km }} zł</p>
+                </div>
+
+
+            </div>
+
+            <div class="mt-6">
+                <a href="{% url 'order-list' %}" class="btn">Back to list</a>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}
