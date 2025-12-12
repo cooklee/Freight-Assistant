@@ -40,7 +40,7 @@ class RegisterViewForm(forms.Form):
         cleaned = super().clean()
 
         if cleaned.get("password") != cleaned.get("password2"):
-            raise forms.ValidationError("Passwords don't match")
+            raise forms.ValidationError("Passwords don't match.")
 
         if User.objects.filter(username=cleaned.get("username")).exists():
             raise forms.ValidationError("User with this username already exists.")
@@ -58,3 +58,22 @@ class PasswordChangeForm(forms.Form):
     new_password_2 = forms.CharField(
         widget=forms.PasswordInput(attrs={'class': 'input input-bordered w-full'})
     )
+
+    def __init__(self, *args, user=None, **kwargs):
+        self.user = user
+        super().__init__(*args, **kwargs)
+
+    def clean_old_password(self):
+        old_password = self.cleaned_data.get('old_password')
+        if not self.user.check_password(old_password):
+            raise forms.ValidationError("Old password is incorrect.")
+        return old_password
+
+    def clean(self):
+        cleaned = super().clean()
+        new = cleaned.get("new_password")
+        new2 = cleaned.get("new_password_2")
+        if new and new2 and new != new2:
+            raise forms.ValidationError("New passwords do not match.")
+        return cleaned
+

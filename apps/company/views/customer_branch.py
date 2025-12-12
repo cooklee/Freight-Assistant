@@ -32,11 +32,11 @@ class CustomerBranchAddView(View):
 
 class CustomerBranchDetailView(View):
     def get(self, request, branch_id):
-        customer_branch = get_object_or_404(
+        branch = get_object_or_404(
             CustomerBranch, id=branch_id
         )
         return render(request, 'company/customer_branch/customer_branch_detail.html',
-                      {'customer_branch': customer_branch})
+                      {'branch': branch})
 
 
 class CustomerBranchUpdateView(View):
