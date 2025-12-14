@@ -12,3 +12,9 @@ class DriverForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         for field in self.fields.values():
             field.widget.attrs.update({'class': 'input input-bordered w-full'})
+
+    def clean_phone(self):
+        phone = self.cleaned_data["phone"]
+        if not phone.isdigit():
+            raise forms.ValidationError("Phone must contain digits only.")
+        return phone

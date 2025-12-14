@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.test import Client
 
 from apps.company.models import Carrier, Customer, CustomerBranch
+from apps.drivers.models import Driver
 
 
 @pytest.fixture
@@ -84,7 +85,7 @@ def customer(customer_list):
 def branch_list(customer_list):
     all_branches = []
     for customer in customer_list:
-        custome_branches = [
+        customer_branches = [
              CustomerBranch(
                 customer=customer,
                 name=f"{customer.name} Test Branch {i}",
@@ -92,12 +93,34 @@ def branch_list(customer_list):
             )
         for i in range(1,3)
         ]
-        all_branches.extend(custome_branches)
+        all_branches.extend(customer_branches)
     CustomerBranch.objects.bulk_create(all_branches)
     return CustomerBranch.objects.all()
 
 @pytest.fixture
 def branch(branch_list):
     return CustomerBranch.objects.first()
+
+@pytest.fixture
+def driver_list(carrier_list):
+    all_drivers = []
+    for carrier in carrier_list:
+        carrier_drivers = [
+            Driver(
+                carrier=carrier,
+                first_name=f"test_driver_name{i} - {carrier.name}",
+                last_name=f"test_driver_surname{i} - {carrier.name}",
+                phone=f"12345678{i}"
+            )
+            for i in range(1,3)
+        ]
+        all_drivers.extend(carrier_drivers)
+    Driver.objects.bulk_create(all_drivers)
+    return Driver.objects.all()
+
+@pytest.fixture
+def driver(driver_list):
+    return Driver.objects.first()
+
 
 

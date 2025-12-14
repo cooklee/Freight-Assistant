@@ -46,6 +46,7 @@ def test_carrier_detail_view_get(client, user, carrier):
     assert response.status_code == 200
     assert 'carrier' in response.context
     assert carrier == response.context['carrier']
+    assert 'drivers' in response.context
 
 @pytest.mark.django_db
 def test_carrier_update_view_get(client, user, carrier):
