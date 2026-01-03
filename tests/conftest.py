@@ -4,6 +4,8 @@ from django.test import Client
 
 from apps.company.models import Carrier, Customer, CustomerBranch
 from apps.drivers.models import Driver
+from apps.messaging.models import Conversation, Message
+from apps.transport.models import Route, Stop
 
 
 @pytest.fixture
@@ -12,14 +14,27 @@ def client():
 
 
 @pytest.fixture
-def user():
-    user = User.objects.create_user(
-        username="test",
-        email="test@mail.com",
-    )
-    user.set_password("testpassword")
-    user.save()
-    return user
+def user_list():
+    users_list = []
+    for i in range(1, 5):
+        user = User(
+            username=f"test_username{i}",
+            email=f"test{i}@mail.com",
+        )
+        user.set_password(f"testpassword{i}")
+        user.save()
+        users_list.append(user)
+    return users_list
+
+
+@pytest.fixture
+def user(user_list):
+    return User.objects.first()
+
+
+@pytest.fixture
+def user_2(user_list):
+    return User.objects.last()
 
 
 @pytest.fixture
@@ -81,25 +96,28 @@ def customer_list():
 def customer(customer_list):
     return customer_list[0]
 
+
 @pytest.fixture
 def branch_list(customer_list):
     all_branches = []
     for customer in customer_list:
         customer_branches = [
-             CustomerBranch(
+            CustomerBranch(
                 customer=customer,
                 name=f"{customer.name} Test Branch {i}",
                 address=f"Test Branch Address{i}"
             )
-        for i in range(1,3)
+            for i in range(1, 3)
         ]
         all_branches.extend(customer_branches)
     CustomerBranch.objects.bulk_create(all_branches)
     return CustomerBranch.objects.all()
 
+
 @pytest.fixture
 def branch(branch_list):
     return CustomerBranch.objects.first()
+
 
 @pytest.fixture
 def driver_list(carrier_list):
@@ -112,15 +130,37 @@ def driver_list(carrier_list):
                 last_name=f"test_driver_surname{i} - {carrier.name}",
                 phone=f"12345678{i}"
             )
-            for i in range(1,3)
+            for i in range(1, 3)
         ]
         all_drivers.extend(carrier_drivers)
     Driver.objects.bulk_create(all_drivers)
     return Driver.objects.all()
+
 
 @pytest.fixture
 def driver(driver_list):
     return Driver.objects.first()
 
 
+@pytest.fixture
+def conversation(user, user_2):
+    return Conversation.objects.create(user1=user, user2=user_2, subject="Hello")
 
+
+@pytest.fixture
+def message(conversation, user):
+    return Message.objects.create(conversation=conversation, sender=user, text='Initial msg')
+
+
+@pytest.fixture
+def route(user):
+    return Route.objects.create(name='test_route', user=user)
+
+@pytest.fixture
+def stop(route):
+    return Stop.objects.create(
+        route=route,
+        stop_number=1,
+        stop_type='START_FROM_BASE',
+        location='initial',
+        )

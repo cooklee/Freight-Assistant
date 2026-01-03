@@ -22,6 +22,7 @@ class CalculationForm(forms.ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop("user", None)
         super().__init__(*args, **kwargs)
 
         for field in self.fields.values():
@@ -34,8 +35,10 @@ class CalculationForm(forms.ModelForm):
         self.fields["carrier"].empty_label = "Select carrier"
         self.fields["driver_1"].empty_label = None
         self.fields["driver_2"].empty_label = None
-
-        self.fields["route"].queryset = Route.objects.order_by("name")
+        if self.user:
+            self.fields["route"].queryset = Route.objects.filter(user=self.user).order_by("name")
+        else:
+            self.fields["route"].queryset = Route.objects.none()
         self.fields["carrier"].queryset = Carrier.objects.order_by("name")
 
         carrier_id = None
@@ -54,3 +57,9 @@ class CalculationForm(forms.ModelForm):
         else:
             self.fields["driver_1"].queryset = Driver.objects.none()
             self.fields["driver_2"].queryset = Driver.objects.none()
+
+    def clean_route(self):
+        route = self.cleaned_data["route"]
+        if self.user and route.user_id != self.user.id:
+            raise forms.ValidationError("Invalid route.")
+        return route

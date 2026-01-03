@@ -70,7 +70,7 @@ def test_profile_update(client, user, profile):
 def test_password_change(client, user, profile):
     client.force_login(user)
     response = client.post(reverse('profile'), data={
-        'old_password': 'testpassword',
+        'old_password': 'testpassword1',
         'new_password': 'newpass123',
         'new_password_2': 'newpass123',
     })

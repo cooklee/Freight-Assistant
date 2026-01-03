@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-
+{% load transport_extras %}
 {% block title %}Calculation {{ calculation.route.name }}{% endblock %}
 
 {% block content %}
@@ -24,12 +24,13 @@
             <hr class="my-3">
 
             <p><strong>Total km:</strong> {{ calculation.total_km }}</p>
-            <p><strong>Drive time:</strong> {{ calculation.total_drive_time_minutes }} min</p>
-            <p><strong>Break time:</strong> {{ calculation.total_break_time_minutes }} min</p>
-            <p><strong>Rest time:</strong> {{ calculation.total_rest_time_minutes }} min</p>
-            <p><strong>Work time:</strong> {{ calculation.total_other_work_time_minutes }} min</p>
+            <p><strong>Drive time:</strong> {{ calculation.total_drive_time_minutes|minutes_to_hm }}</p>
+            <p><strong>Break time:</strong> {{ calculation.total_break_time_minutes|minutes_to_hm }}</p>
+            <p><strong>Rest time:</strong> {{ calculation.total_rest_time_minutes|minutes_to_hm }}</p>
+            <p><strong>Work time:</strong> {{ calculation.total_other_work_time_minutes|minutes_to_hm }}</p>
 
-            <p class="mt-3"><strong>Total work (hours):</strong> {{ total_work_hours|floatformat:2 }}</p>
+            <p class="mt-3"><strong>Total work (hours):</strong> {{ work_hours|minutes_to_hm }}</p>
+            <p class="mt-3"><strong>Total duration (hours):</strong> {{ total_duration_hours|minutes_to_hm }}</p>
         </div>
     </div>
 

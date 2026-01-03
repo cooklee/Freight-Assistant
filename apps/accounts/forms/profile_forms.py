@@ -6,6 +6,10 @@ from apps.accounts.models import UserProfile
 class UserProfileForm(forms.ModelForm):
     first_name = forms.CharField(label='Name', max_length=120)
     last_name = forms.CharField(label='Surname', max_length=120)
+    twitter = forms.URLField(assume_scheme='https')
+    facebook = forms.URLField(assume_scheme='https')
+    instagram = forms.URLField(assume_scheme='https')
+    linkedin = forms.URLField(assume_scheme='https')
 
     class Meta:
         model = UserProfile

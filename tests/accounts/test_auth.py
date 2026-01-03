@@ -29,7 +29,7 @@ def test_login_get(client):
 def test_login_success(client, user):
     response = client.post(reverse('login'), {
         'username': user.username,
-        'password': 'testpassword',
+        'password': 'testpassword1',
     })
     # print(response.context['form'].errors)
     assert response.status_code == 302
@@ -87,7 +87,7 @@ def test_register_fail(client, user):
 
 @pytest.mark.django_db
 def test_register_username_taken(client, user):
-    response = client.post(reverse('register'), valid_registration_data())
+    response = client.post(reverse('register'), valid_registration_data(username=user.username))
     print(response.context['form'].errors)
     assert response.status_code == 200
     assert 'User with this username already exists.' in response.context['form'].errors['__all__']

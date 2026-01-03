@@ -26,7 +26,7 @@ class StopCreateView(LoginRequiredMixin, View):
             stop = form.save(commit=False)
             stop.route = route
             stop.save()
-            return redirect("stop-list", route_id=route.id)
+            return redirect("route-detail", route_id=route.id)
 
         return render(request, "transport/stop/stop_form.html", {
             "form": form,
@@ -57,7 +57,7 @@ class StopUpdateView(LoginRequiredMixin, View):
 
         if form.is_valid():
             form.save()
-            return redirect("stop-list", route_id=stop.route.id)
+            return redirect("route-detail", route_id=stop.route.id)
 
         return render(request, "transport/stop/stop_form.html", {
             "form": form,
@@ -90,4 +90,4 @@ class StopDeleteView(LoginRequiredMixin, View):
         )
         route_id = stop.route.id
         stop.delete()
-        return redirect("stop-list", route_id=route_id)
+        return redirect("route-detail", route_id=route_id)

@@ -16,12 +16,13 @@ def valid_driver_data(**kwargs):
 
 
 @pytest.mark.django_db
-def test_driver_list_view(client, user, driver):
+def test_driver_list_view(client, user, driver_list):
     client.force_login(user)
     response = client.get(reverse('driver-list'))
     assert response.status_code == 200
     assert 'drivers' in response.context
-    assert driver in response.context['drivers']
+    for driver_obj in driver_list:
+        assert driver_obj in response.context['drivers']
 
 
 @pytest.mark.django_db

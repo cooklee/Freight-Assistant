@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.contrib.auth.models import User
 from apps.company.models.carrier import Carrier
 from apps.drivers.models import Driver
 from .route import Route
@@ -13,7 +13,12 @@ class Calculation(models.Model):
     - Google Maps API (distances + durations)
     - EU regulations
     """
-
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE,
+        related_name="calculations",
+        null=True,
+        blank=True,
+    )
     route = models.ForeignKey(Route, on_delete=models.PROTECT)
     carrier = models.ForeignKey(Carrier, on_delete=models.CASCADE)
 
