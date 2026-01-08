@@ -29,8 +29,8 @@
             <p><strong>Rest time:</strong> {{ calculation.total_rest_time_minutes|minutes_to_hm }}</p>
             <p><strong>Work time:</strong> {{ calculation.total_other_work_time_minutes|minutes_to_hm }}</p>
 
-            <p class="mt-3"><strong>Total work (hours):</strong> {{ work_hours|minutes_to_hm }}</p>
-            <p class="mt-3"><strong>Total duration (hours):</strong> {{ total_duration_hours|minutes_to_hm }}</p>
+            <p class="mt-3"><strong>Total work (hours):</strong> {{ work_minutes|minutes_to_hm }}</p>
+            <p class="mt-3"><strong>Total duration (hours):</strong> {{ total_duration_minutes|minutes_to_hm }}</p>
         </div>
     </div>
 

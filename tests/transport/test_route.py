@@ -12,6 +12,7 @@ def test_route_str_and_total_stops(user):
     assert str(route) == 'test'
     assert route.total_stops == 2
 
+
 @pytest.mark.django_db
 def test_route_list_view(client, user):
     client.force_login(user)
@@ -104,7 +105,6 @@ def test_route_with_stops_create_view_get(client, user):
     assert response.context['form']
     assert response.context['formset']
     assert response.context['GOOGLE_MAPS_API_KEY']
-
 
 
 @pytest.mark.django_db

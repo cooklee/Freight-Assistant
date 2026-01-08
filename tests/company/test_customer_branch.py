@@ -1,7 +1,7 @@
 import pytest
 from django.shortcuts import reverse
-from apps.company.models import Customer, CustomerBranch
 
+from apps.company.models import CustomerBranch
 
 
 def valid_branch_data():

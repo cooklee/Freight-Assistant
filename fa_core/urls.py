@@ -28,6 +28,7 @@ urlpatterns = [
     path('drivers/', include('apps.drivers.urls')),
     path('orders/', include('apps.transport.urls')),
     path('messaging/', include('apps.messaging.urls')),
+    path('extra/', include('apps.tools.urls')),
 
     path('', include('apps.core.urls')),
 ]

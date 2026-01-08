@@ -1,5 +1,6 @@
 import pytest
 from django.shortcuts import reverse
+
 from apps.company.models import Customer
 
 
@@ -95,6 +96,7 @@ def test_customer_update_view_post_bad_data(client, user, customer):
     assert 'This field is required.' in error_list['name']
     assert 'NIP must contain digits only.' in error_list['nip']
     assert 'Phone must contain digits only.' in error_list['phone']
+
 
 @pytest.mark.django_db
 def test_customer_update_view_post_bad_nip_length(client, user, customer):

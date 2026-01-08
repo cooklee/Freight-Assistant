@@ -71,7 +71,7 @@ def test_register_success(client):
 
 @pytest.mark.django_db
 def test_register_fail(client, user):
-    response = client.post(reverse('register'),valid_registration_data(
+    response = client.post(reverse('register'), valid_registration_data(
         first_name='',
         last_name='',
         email='wrongmail',

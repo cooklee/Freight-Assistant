@@ -9,8 +9,9 @@ class StopForm(forms.ModelForm):
         model = Stop
         fields = ["stop_number", "stop_type", "location", "driver_participates"]
         widgets = {
-            "stop_number": forms.NumberInput(attrs={
-                "class": "input input-bordered w-full"
+            "stop_number": forms.TextInput(attrs={
+                "class": "input input-bordered w-full",
+                'inputmode': 'numeric',
             }),
             "stop_type": forms.Select(attrs={
                 "class": "select select-bordered w-full",
@@ -29,13 +30,10 @@ class StopForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-
         self.fields["stop_type"].required = True
         self.fields["stop_type"].choices = [
             c for c in self.fields["stop_type"].choices if c[0] != ""
         ]
-
-
 
 
 StopFormSet = inlineformset_factory(

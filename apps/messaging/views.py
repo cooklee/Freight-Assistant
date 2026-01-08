@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import models
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
@@ -6,7 +7,7 @@ from apps.messaging.forms import ConversationForm, MessageForm
 from apps.messaging.models import Conversation, Message
 
 
-class ConversationAddView(View):
+class ConversationAddView(LoginRequiredMixin, View):
     def get(self, request):
         form = ConversationForm(request_user=request.user)
         return render(request, 'messaging/conversation_add.html', {'form': form})
@@ -34,7 +35,7 @@ class ConversationAddView(View):
         return render(request, 'messaging/conversation_add.html', {'form': form})
 
 
-class ConversationDetailView(View):
+class ConversationDetailView(LoginRequiredMixin, View):
     def get(self, request, conversation_id):
         conversation = get_object_or_404(
             Conversation,
@@ -76,7 +77,7 @@ class ConversationDetailView(View):
         return redirect('conversation-detail', conversation_id=conversation.id)
 
 
-class ConversationListView(View):
+class ConversationListView(LoginRequiredMixin, View):
     def get(self, request):
         conversations = Conversation.objects.filter(
             models.Q(user1=request.user) | models.Q(user2=request.user)

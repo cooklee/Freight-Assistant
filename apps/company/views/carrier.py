@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 
@@ -6,13 +7,13 @@ from ..models import Carrier
 from ...drivers.models import Driver
 
 
-class CarrierListView(View):
+class CarrierListView(LoginRequiredMixin, View):
     def get(self, request):
         carriers = Carrier.objects.all()
         return render(request, 'company/carrier/carrier_list.html', {'carriers': carriers})
 
 
-class CarrierAddView(View):
+class CarrierAddView(LoginRequiredMixin, View):
 
     def get(self, request):
         form = CarrierForm()
@@ -27,7 +28,7 @@ class CarrierAddView(View):
         return render(request, 'company/carrier/carrier_add.html', {'form': form})
 
 
-class CarrierDetailView(View):
+class CarrierDetailView(LoginRequiredMixin, View):
     def get(self, request, carrier_id):
         carrier = get_object_or_404(
             Carrier, id=carrier_id
@@ -36,7 +37,7 @@ class CarrierDetailView(View):
         return render(request, 'company/carrier/carrier_detail.html', {'carrier': carrier, 'drivers': drivers})
 
 
-class CarrierUpdateView(View):
+class CarrierUpdateView(LoginRequiredMixin, View):
     def get(self, request, carrier_id):
         carrier = get_object_or_404(
             Carrier, id=carrier_id
@@ -55,7 +56,7 @@ class CarrierUpdateView(View):
         return render(request, 'company/carrier/carrier_update.html', {'form': form})
 
 
-class CarrierDeleteView(View):
+class CarrierDeleteView(LoginRequiredMixin, View):
     def get(self, request, carrier_id):
         carrier = get_object_or_404(
             Carrier, id=carrier_id

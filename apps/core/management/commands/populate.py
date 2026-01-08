@@ -93,7 +93,7 @@ class Command(BaseCommand):
         if created:
             self.stdout.write(self.style.SUCCESS(f" Created test user: {test_username}"))
         else:
-            self.stdout.write(self.style.WARNING(f" Updated existing test user password"))
+            self.stdout.write(self.style.WARNING(" Updated existing test user password"))
 
         return user
 

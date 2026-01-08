@@ -1,12 +1,13 @@
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect
 from django.views import View
 
 from apps.accounts.forms import UserProfileForm, PasswordChangeForm
 
 
-class ProfileView(View):
+class ProfileView(LoginRequiredMixin, View):
     def get(self, request):
         profile = request.user.profile
         form = UserProfileForm(instance=profile, user=request.user)
@@ -54,7 +55,7 @@ class ProfileView(View):
         })
 
 
-class ProfileImageDeleteView(View):
+class ProfileImageDeleteView(LoginRequiredMixin, View):
     def get(self, request):
         profile = request.user.profile
         profile.profile_image.delete()

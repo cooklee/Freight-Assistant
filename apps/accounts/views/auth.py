@@ -6,7 +6,6 @@ from django.views import View
 from apps.accounts.forms import LoginViewForm, RegisterViewForm
 
 
-
 class LoginView(View):
     def get(self, request):
         form = LoginViewForm()

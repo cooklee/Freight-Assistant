@@ -34,4 +34,3 @@ class ConversationForm(forms.Form):
         super().__init__(*args, **kwargs)
 
         self.fields["user2"].queryset = AppUser.objects.exclude(id=request_user.id)
-

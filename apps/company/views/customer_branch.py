@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 
@@ -5,13 +6,13 @@ from ..forms import CustomerBranchForm
 from ..models import CustomerBranch, Customer
 
 
-class CustomerBranchListView(View):
+class CustomerBranchListView(LoginRequiredMixin, View):
     def get(self, request):
         branches = CustomerBranch.objects.all()
         return render(request, 'company/customer_branch/customer_branch_list.html', {'branches': branches})
 
 
-class CustomerBranchAddView(View):
+class CustomerBranchAddView(LoginRequiredMixin, View):
 
     def get(self, request, customer_id):
         form = CustomerBranchForm()
@@ -30,7 +31,7 @@ class CustomerBranchAddView(View):
         return render(request, 'company/customer_branch/customer_branch_add.html', {'form': form})
 
 
-class CustomerBranchDetailView(View):
+class CustomerBranchDetailView(LoginRequiredMixin, View):
     def get(self, request, branch_id):
         branch = get_object_or_404(
             CustomerBranch, id=branch_id
@@ -39,7 +40,7 @@ class CustomerBranchDetailView(View):
                       {'branch': branch})
 
 
-class CustomerBranchUpdateView(View):
+class CustomerBranchUpdateView(LoginRequiredMixin, View):
     def get(self, request, branch_id):
         branch = get_object_or_404(
             CustomerBranch, id=branch_id
@@ -62,7 +63,7 @@ class CustomerBranchUpdateView(View):
         return render(request, 'company/customer_branch/customer_branch_update.html', {'form': form})
 
 
-class CustomerBranchDeleteView(View):
+class CustomerBranchDeleteView(LoginRequiredMixin, View):
     def get(self, request, branch_id):
         branch = get_object_or_404(
             CustomerBranch, id=branch_id

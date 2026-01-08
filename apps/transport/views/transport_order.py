@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 
@@ -5,30 +6,30 @@ from ..forms import TransportOrderForm, TransportOrderUpdateForm
 from ..models import TransportOrder
 
 
-class TransportOrderListView(View):
+class TransportOrderListView(LoginRequiredMixin, View):
     def get(self, request):
         orders = TransportOrder.objects.select_related(
             "customer", "carrier", "driver_1", "driver_2"
-        ).order_by("-id")
+        ).filter(user=request.user).order_by("-id")
 
         return render(request, "transport/order/order_list.html", {
             "orders": orders,
         })
 
 
-class TransportOrderDetailView(View):
+class TransportOrderDetailView(LoginRequiredMixin, View):
     def get(self, request, order_id):
         qs = TransportOrder.objects.select_related(
             "customer", "carrier", "driver_1", "driver_2"
         )
-        order = get_object_or_404(qs, id=order_id)
+        order = get_object_or_404(qs, id=order_id, user=request.user)
 
         return render(request, "transport/order/order_detail.html", {
             "order": order,
         })
 
 
-class TransportOrderCreateView(View):
+class TransportOrderCreateView(LoginRequiredMixin, View):
     def get(self, request):
         form = TransportOrderForm()
         return render(request, "transport/order/order_form.html", {"form": form})
@@ -36,20 +37,22 @@ class TransportOrderCreateView(View):
     def post(self, request):
         form = TransportOrderForm(request.POST)
         if form.is_valid():
-            form.save()
+            order = form.save(commit=False)
+            order.user = request.user
+            order.save()
             return redirect("order-list")
 
         return render(request, "transport/order/order_form.html", {"form": form})
 
 
-class TransportOrderUpdateView(View):
+class TransportOrderUpdateView(LoginRequiredMixin, View):
     def get(self, request, order_id):
-        order = get_object_or_404(TransportOrder, id=order_id)
+        order = get_object_or_404(TransportOrder, id=order_id, user=request.user)
         form = TransportOrderUpdateForm(instance=order)
         return render(request, "transport/order/order_form.html", {"form": form})
 
     def post(self, request, order_id):
-        order = get_object_or_404(TransportOrder, id=order_id)
+        order = get_object_or_404(TransportOrder, id=order_id, user=request.user)
         form = TransportOrderUpdateForm(request.POST, instance=order)
 
         if form.is_valid():
@@ -59,12 +62,12 @@ class TransportOrderUpdateView(View):
         return render(request, "transport/order/order_form.html", {"form": form})
 
 
-class TransportOrderDeleteView(View):
+class TransportOrderDeleteView(LoginRequiredMixin, View):
     def get(self, request, order_id):
-        order = get_object_or_404(TransportOrder, id=order_id)
+        order = get_object_or_404(TransportOrder, id=order_id, user=request.user)
         return render(request, "transport/order/order_delete.html", {"order": order})
 
     def post(self, request, order_id):
-        order = get_object_or_404(TransportOrder, id=order_id)
+        order = get_object_or_404(TransportOrder, id=order_id, user=request.user)
         order.delete()
         return redirect("order-list")

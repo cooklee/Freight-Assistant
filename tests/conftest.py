@@ -5,7 +5,7 @@ from django.test import Client
 from apps.company.models import Carrier, Customer, CustomerBranch
 from apps.drivers.models import Driver
 from apps.messaging.models import Conversation, Message
-from apps.transport.models import Route, Stop
+from apps.transport.models import Route, Stop, Calculation, TransportOrder
 
 
 @pytest.fixture
@@ -156,6 +156,7 @@ def message(conversation, user):
 def route(user):
     return Route.objects.create(name='test_route', user=user)
 
+
 @pytest.fixture
 def stop(route):
     return Stop.objects.create(
@@ -163,4 +164,40 @@ def stop(route):
         stop_number=1,
         stop_type='START_FROM_BASE',
         location='initial',
-        )
+    )
+
+
+@pytest.fixture
+def calculation(user, route, carrier, driver_list):
+    driver_1 = driver_list.filter(carrier=carrier).first()
+    return Calculation.objects.create(
+        user=user,
+        route=route,
+        carrier=carrier,
+        driver_1=driver_1,
+        driver_2=None,
+        date="2026-01-12",
+        total_km=100,
+        total_drive_time_minutes=60,
+        total_break_time_minutes=15,
+        total_rest_time_minutes=11 * 60,
+        total_other_work_time_minutes=30,
+        schedule="Day 1: Driving – 1h 0min",
+    )
+
+
+@pytest.fixture
+def transport_order(user, customer, carrier, driver_list):
+    driver_1 = driver_list.filter(carrier=carrier).first()
+    return TransportOrder.objects.create(
+        user=user,
+        customer=customer,
+        carrier=carrier,
+        driver_1=driver_1,
+        driver_2=None,
+        distance_km=100,
+        price_for_customer="2000.00",
+        rate_per_km="1.50",
+        carrier_cost="150.00",
+        profit="1850.00",
+    )

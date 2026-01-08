@@ -43,8 +43,8 @@ class CalculationDetailView(LoginRequiredMixin, View):
         return render(request, "transport/calculation/calculation_detail.html", {
             "calculation": calculation,
             "schedule_rows": schedule_rows,
-            "work_hours": work_minutes,
-            "total_duration_hours": total_duration_minutes,
+            "work_minutes": work_minutes,
+            "total_duration_minutes": total_duration_minutes,
         })
 
 

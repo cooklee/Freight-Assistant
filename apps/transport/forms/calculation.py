@@ -46,7 +46,6 @@ class CalculationForm(forms.ModelForm):
         if "carrier" in self.data:
             carrier_id = self.data.get("carrier")
 
-
         elif self.instance and self.instance.carrier_id:
             carrier_id = self.instance.carrier_id
 

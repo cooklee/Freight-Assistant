@@ -1,9 +1,10 @@
-from django import forms
 from decimal import Decimal
 
-from apps.transport.models import TransportOrder
+from django import forms
+
 from apps.company.models import Customer, Carrier
 from apps.drivers.models import Driver
+from apps.transport.models import TransportOrder
 
 
 class TransportOrderBaseForm(forms.ModelForm):
@@ -35,7 +36,6 @@ class TransportOrderBaseForm(forms.ModelForm):
                     }
                 )
 
-
         if not self.instance.pk:
             self.fields["distance_km"].initial = ""
 
@@ -47,12 +47,8 @@ class TransportOrderBaseForm(forms.ModelForm):
         self.fields["driver_1"].label = "Driver"
         self.fields["driver_2"].label = "Co-Driver"
 
-
         self.fields["customer"].queryset = Customer.objects.order_by("name")
         self.fields["carrier"].queryset = Carrier.objects.order_by("name")
-
-
-
 
         if "carrier" in self.data:
             carrier_id = self.data.get("carrier")
@@ -60,7 +56,6 @@ class TransportOrderBaseForm(forms.ModelForm):
 
             self.fields["driver_1"].queryset = qs
             self.fields["driver_2"].queryset = qs
-
 
         elif self.instance and self.instance.carrier_id:
             carrier_id = self.instance.carrier_id
@@ -80,7 +75,7 @@ class TransportOrderBaseForm(forms.ModelForm):
 class TransportOrderUpdateForm(TransportOrderBaseForm):
     class Meta:
         model = TransportOrder
-        fields = "__all__"
+        exclude = ["user", ]
 
     def save(self, commit=True):
         instance = super().save(commit=False)
@@ -100,7 +95,7 @@ class TransportOrderUpdateForm(TransportOrderBaseForm):
 class TransportOrderForm(TransportOrderBaseForm):
     class Meta:
         model = TransportOrder
-        exclude = ["carrier_cost", "profit"]
+        exclude = ["carrier_cost", "profit", 'user', 'created_at']
 
     def save(self, commit=True):
         instance = super().save(commit=False)

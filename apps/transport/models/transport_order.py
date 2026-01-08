@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.contrib.auth.models import User
 from apps.company.models.carrier import Carrier
 from apps.company.models.customer import Customer
 from apps.drivers.models import Driver
@@ -10,6 +10,12 @@ class TransportOrder(models.Model):
     Represents a single transport job. Stores route details,
     pricing, assigned carrier and assigned driver(s).
     """
+    user = models.ForeignKey(
+        User,
+        related_name="orders",
+        on_delete=models.CASCADE,
+        null=True, blank=True,
+    )
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
     carrier = models.ForeignKey(Carrier, on_delete=models.CASCADE)
 

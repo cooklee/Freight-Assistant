@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 
@@ -5,13 +6,13 @@ from .forms import DriverForm
 from .models import Driver
 
 
-class DriverListView(View):
+class DriverListView(LoginRequiredMixin, View):
     def get(self, request):
         drivers = Driver.objects.all()
         return render(request, 'drivers/driver_list.html', {'drivers': drivers})
 
 
-class DriverAddView(View):
+class DriverAddView(LoginRequiredMixin, View):
     def get(self, request, carrier_id):
         form = DriverForm()
         return render(request, 'drivers/driver_add.html', {'form': form})
@@ -26,7 +27,7 @@ class DriverAddView(View):
         return render(request, 'drivers/driver_add.html', {'form': form})
 
 
-class DriverDetailView(View):
+class DriverDetailView(LoginRequiredMixin, View):
     def get(self, request, driver_id):
         driver = get_object_or_404(
             Driver,
@@ -35,7 +36,7 @@ class DriverDetailView(View):
         return render(request, 'drivers/driver_detail.html', {'driver': driver})
 
 
-class DriverUpdateView(View):
+class DriverUpdateView(LoginRequiredMixin, View):
     def get(self, request, driver_id):
         driver = get_object_or_404(
             Driver,
@@ -58,7 +59,7 @@ class DriverUpdateView(View):
         return render(request, 'drivers/driver_update.html', {'form': form, 'driver': driver})
 
 
-class DriverDeleteView(View):
+class DriverDeleteView(LoginRequiredMixin, View):
     def get(self, request, driver_id):
         driver = get_object_or_404(
             Driver,

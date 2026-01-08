@@ -24,6 +24,7 @@ def test_carrier_list_view(client, user, carrier_list):
     for carrier_obj in carrier_list:
         assert carrier_obj in response.context['carriers']
 
+
 @pytest.mark.django_db
 def test_carrier_add_view_get(client, user):
     client.force_login(user)
@@ -31,12 +32,14 @@ def test_carrier_add_view_get(client, user):
     assert response.status_code == 200
     assert response.context['form']
 
+
 @pytest.mark.django_db
 def test_carrier_add_view_post(client, user):
     client.force_login(user)
     response = client.post(reverse('carrier-add'), valid_carrier_data())
     assert response.status_code == 302
     assert Carrier.objects.get(name=valid_carrier_data()['name'])
+
 
 @pytest.mark.django_db
 def test_carrier_detail_view_get(client, user, carrier):
@@ -48,6 +51,7 @@ def test_carrier_detail_view_get(client, user, carrier):
     assert carrier == response.context['carrier']
     assert 'drivers' in response.context
 
+
 @pytest.mark.django_db
 def test_carrier_update_view_get(client, user, carrier):
     client.force_login(user)
@@ -58,6 +62,7 @@ def test_carrier_update_view_get(client, user, carrier):
     assert form.instance == carrier
     for field in ['name', 'nip', 'address', 'email', 'phone']:
         assert form.initial[field] == getattr(carrier, field)
+
 
 @pytest.mark.django_db
 def test_carrier_update_view_post(client, user, carrier):
@@ -89,6 +94,7 @@ def test_carrier_update_view_post_bad_data(client, user, carrier):
     assert 'NIP must contain digits only.' in error_list['nip']
     assert 'Phone must contain digits only.' in error_list['phone']
 
+
 @pytest.mark.django_db
 def test_carrier_update_view_post_bad_nip_length(client, user, carrier):
     bad_data = valid_carrier_data(
@@ -101,6 +107,7 @@ def test_carrier_update_view_post_bad_nip_length(client, user, carrier):
     error_list = response.context['form'].errors
     assert 'NIP must be exactly 10 digits.' in error_list['nip']
 
+
 @pytest.mark.django_db
 def test_carrier_delete_view_get(client, user, carrier):
     client.force_login(user)
@@ -109,6 +116,7 @@ def test_carrier_delete_view_get(client, user, carrier):
     assert response.status_code == 200
     assert 'carrier' in response.context
     assert carrier == response.context['carrier']
+
 
 @pytest.mark.django_db
 def test_carrier_delete_view_post(client, user, carrier):

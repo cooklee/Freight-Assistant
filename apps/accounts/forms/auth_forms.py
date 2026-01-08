@@ -76,4 +76,3 @@ class PasswordChangeForm(forms.Form):
         if new and new2 and new != new2:
             raise forms.ValidationError("New passwords do not match.")
         return cleaned
-

@@ -32,6 +32,9 @@
                                 <div>
                                     <label class="label"><span class="label-text">Stop #</span></label>
                                     {{ form.stop_number }}
+                                    {% if form.stop_number.errors %}
+                                        <p class="text-error text-sm mt-1">{{ form.stop_number.errors|striptags }}</p>
+                                    {% endif %}
                                 </div>
 
                                 <div>
