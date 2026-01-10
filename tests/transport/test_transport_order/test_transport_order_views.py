@@ -56,7 +56,7 @@ def test_order_create_post(client, user, customer, carrier, driver_list):
     assert response.status_code == 302
     order = TransportOrder.objects.latest("id")
     assert order.user_id == user.id
-    assert response.url == reverse("order-list")
+    assert response.url == reverse("order-detail", args=[order.id])
 
 
 @pytest.mark.django_db
