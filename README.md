@@ -217,7 +217,13 @@ This command creates demo data:
 - calculations with schedules (uses Google Distance Matrix API) ,
 - demo messaging conversations.
 
-### 7) Run development server
+### 7) Tailwind (required for UI styling)
+```bash
+python manage.py tailwind install
+python manage.py tailwind build
+```
+
+### 8) Run development server
 ```bash
 python manage.py runserver
 ```
@@ -227,7 +233,7 @@ Open in browser:
 http://127.0.0.1:8000/
 ```
 
-### 8) Login credentials (after populate)
+### 9) Login credentials (after populate)
 ```
 username: test_user
 password: test1234
@@ -243,4 +249,5 @@ password: test1234
 
 Created by **Shizol01**  
 Python / Django Developer
+
 
