@@ -3,6 +3,13 @@
 {% block title %}Routes{% endblock %}
 
 {% block content %}
+        <input
+            type="text"
+            placeholder="Search"
+            class="input input-bordered w-full mb-4"
+            autocomplete="off"
+            data-live-search="routes"
+    />
 <div class="my-10">
     <div class="static justify-between items-center mb-6">
         <h1 class="text-3xl font-bold">Routes</h1>
@@ -27,7 +34,11 @@
                         </thead>
                         <tbody>
                             {% for route in routes %}
-                            <tr>
+                            <tr
+                            data-live-group="routes"
+                                        data-live-item
+                                        data-search="{{ route.name }} {{ route.created_at}}"
+                            >
                                 <td>{{ forloop.counter }}</td>
                                 <td class="font-medium">
                                     <a href="{% url 'route-detail' route.id %}" class="link link-hover">

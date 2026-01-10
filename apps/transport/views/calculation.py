@@ -1,6 +1,13 @@
+from pathlib import Path
+
+from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import render, get_object_or_404, redirect
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404
+from django.shortcuts import render, redirect
+from django.template.loader import render_to_string
 from django.views import View
+from weasyprint import HTML, CSS
 
 from apps.transport.forms import CalculationForm
 from apps.transport.models import Calculation
@@ -105,3 +112,42 @@ class CalculationDeleteView(LoginRequiredMixin, View):
         calculation = get_object_or_404(Calculation, id=calculation_id, user=request.user)
         calculation.delete()
         return redirect("calculation-list")
+
+
+class CalculationPdfView(LoginRequiredMixin, View):
+    def get(self, request, calculation_id):
+        calculation = get_object_or_404(
+            Calculation,
+            id=calculation_id,
+            user=request.user,
+        )
+
+        schedule_rows = calculation.schedule.splitlines() if calculation.schedule else []
+
+        work_minutes = (calculation.total_drive_time_minutes or 0) + (calculation.total_other_work_time_minutes or 0)
+        total_duration_minutes = (
+                (calculation.total_drive_time_minutes or 0)
+                + (calculation.total_break_time_minutes or 0)
+                + (calculation.total_rest_time_minutes or 0)
+                + (calculation.total_other_work_time_minutes or 0)
+        )
+
+        html = render_to_string(
+            "transport/calculation/calculation_pdf.html",
+            {
+                "calculation": calculation,
+                "schedule_rows": schedule_rows,
+                "work_minutes": work_minutes,
+                "total_duration_minutes": total_duration_minutes,
+            }
+        )
+
+        css_path = Path(settings.BASE_DIR).parent / "static" / "css" / "pdf.css"
+
+        pdf = HTML(string=html, base_url=request.build_absolute_uri()).write_pdf(
+            stylesheets=[CSS(filename=str(css_path))]
+        )
+
+        response = HttpResponse(pdf, content_type="application/pdf")
+        response["Content-Disposition"] = f'inline; filename="calculation_{calculation.id}.pdf"'
+        return response

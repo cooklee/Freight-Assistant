@@ -40,7 +40,7 @@ class TransportOrderCreateView(LoginRequiredMixin, View):
             order = form.save(commit=False)
             order.user = request.user
             order.save()
-            return redirect("order-list")
+            return redirect("order-detail", order_id=order.id)
 
         return render(request, "transport/order/order_form.html", {"form": form})
 

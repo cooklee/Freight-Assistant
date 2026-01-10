@@ -1,40 +1,48 @@
 {% extends 'base.html' %}
-{% block title %}Driver{% endblock %}
+{% block title %}Drivers List{% endblock %}
 
 {% block content %}
+    <input
+            type="text"
+            placeholder="Search"
+            class="input input-bordered w-full mb-4"
+            autocomplete="off"
+            data-live-search="drivers"
+    />
 
 
-<div class="flex justify-end mb-4">
-    <a href="#" class="btn btn-primary">
-        + Add Driver
-    </a>
-</div>
 
+    <div class="max-w-4xl mx-auto">
 
-<div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-bold mb-2">Driver</h1>
 
-    <h1 class="text-3xl font-bold mb-2">Driver</h1>
-
-    <p class="text-sm text-gray-500 mb-6">
-        List of all drivers.
-    </p>
-
-    <div class="space-y-4">
-        {% for driver in drivers %}
-            <div class="bg-base-100 p-4 rounded shadow-sm border border-base-300">
-                <p class="font-semibold text-lg">{{ driver.first_name }} {{ driver.last_name }}</p>
-                <p class="text-sm text-gray-600">NIP: {{ driver.carrier }}</p>
-
-
-                <div class="mt-3 space-x-2 ">
-                    <a href="{% url 'driver-detail' driver.id %}" class="btn btn-sm">Details</a>
-                    <a href="{% url 'driver-update' driver.id %}" class="btn btn-sm btn-primary">Edit</a>
-                    <a href="{% url 'driver-delete' driver.id %}" class="btn btn-sm btn-warning">Delete</a>
-                </div>
-            </div>
-        {% endfor %}
+    <div class="flex mb-4">
+        <a href="#" class="btn btn-primary">
+            + Add Driver
+        </a>
     </div>
 
-</div>
+
+        <div class="space-y-4">
+            {% for driver in drivers %}
+                <div class="bg-base-100 p-4 rounded shadow-sm border border-base-300"
+                     data-live-group="drivers"
+                     data-live-item
+                     data-search="{{ driver.first_name }} {{ driver.last_name }} {{ driver.carrier }}"
+                >
+                    <p class="font-semibold text-lg">{{ driver.first_name }} {{ driver.last_name }}</p>
+                    <p class="text-sm text-gray-600">Driver employer: {{ driver.carrier }}</p>
+
+
+                    <div class="mt-3 space-x-2 ">
+                        <a href="{% url 'driver-detail' driver.id %}" class="btn btn-sm">Details</a>
+                        <a href="{% url 'driver-update' driver.id %}" class="btn btn-sm btn-primary">Edit</a>
+                        <a href="{% url 'driver-delete' driver.id %}" class="btn btn-sm btn-warning">Delete</a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+    </div>
 
 {% endblock %}

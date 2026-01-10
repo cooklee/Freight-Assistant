@@ -30,6 +30,50 @@
 
 
 {% django_browser_reload_script %}
+
+<script>
+    (function () {
+        const normalize = (s) =>
+            (s || "")
+                .toString()
+                .toLowerCase()
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "")
+                .trim();
+
+        function applyFilter(inputEl) {
+            const query = normalize(inputEl.value);
+            const group = inputEl.getAttribute("data-live-search") || "default";
+
+            const targets = document.querySelectorAll(`[data-live-group="${group}"][data-live-item]`);
+
+            targets.forEach((el) => {
+                const haystack = normalize(el.getAttribute("data-search"));
+                const match = query === "" || haystack.includes(query);
+                el.style.display = match ? "" : "none";
+            });
+        }
+
+        function setupInput(inputEl) {
+            let rafId = null;
+
+            const schedule = () => {
+                if (rafId) cancelAnimationFrame(rafId);
+                rafId = requestAnimationFrame(() => applyFilter(inputEl));
+            };
+
+            inputEl.addEventListener("input", schedule);
+
+            // Initial apply
+            applyFilter(inputEl);
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            document.querySelectorAll("input[data-live-search]").forEach(setupInput);
+        });
+    })();
+</script>
+
 </body>
 {% block extra_js %} {% endblock %}
 </html>

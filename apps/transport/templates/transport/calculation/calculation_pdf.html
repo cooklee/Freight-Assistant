@@ -1,0 +1,152 @@
+{% load transport_extras %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Schedule PDF</title>
+</head>
+<body>
+
+<div class="header">
+    <div>
+        <h1 class="header__title">Driver Schedule Report</h1>
+        <p class="header__subtitle">
+            Route: <strong>{{ calculation.route.name }}</strong> • Date: <strong>{{ calculation.date }}</strong>
+        </p>
+    </div>
+
+    <div class="badge">
+        Calculation #{{ calculation.id }}
+    </div>
+</div>
+
+<div class="grid-2">
+    <div class="col">
+        <div class="block">
+            <p class="block__title">Assignment</p>
+            <table class="kv">
+                <tr>
+                    <td class="key">Carrier</td>
+                    <td class="val">{{ calculation.carrier.name }}</td>
+                </tr>
+                <tr>
+                    <td class="key">Driver</td>
+                    <td class="val">{{ calculation.driver_1 }}</td>
+                </tr>
+                <tr>
+                    <td class="key">Co-driver</td>
+                    <td class="val">{{ calculation.driver_2|default:"—" }}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div class="col">
+        <div class="block">
+            <p class="block__title">Totals</p>
+
+            <div class="summary">
+                <div class="summary__item">
+                    <p class="summary__label">Distance</p>
+                    <p class="summary__value">{{ calculation.total_km|default:0 }} km</p>
+                </div>
+
+                <div class="summary__item">
+                    <p class="summary__label">Drive time</p>
+                    <p class="summary__value">{{ calculation.total_drive_time_minutes|default:0|minutes_to_hm }}</p>
+                </div>
+
+                <div class="summary__item">
+                    <p class="summary__label">Break time</p>
+                    <p class="summary__value">{{ calculation.total_break_time_minutes|default:0|minutes_to_hm }}</p>
+                </div>
+
+                <div class="summary__item">
+                    <p class="summary__label">Rest time</p>
+                    <p class="summary__value">{{ calculation.total_rest_time_minutes|default:0|minutes_to_hm }}</p>
+                </div>
+
+                <div class="summary__item">
+                    <p class="summary__label">Other work</p>
+                    <p class="summary__value">{{ calculation.total_other_work_time_minutes|default:0|minutes_to_hm }}</p>
+                </div>
+            </div>
+
+            <hr>
+
+            <table class="kv">
+                <tr>
+                    <td class="key">Total work</td>
+                    <td class="val right">{{ work_minutes|default:0|minutes_to_hm }}</td>
+                </tr>
+                <tr>
+                    <td class="key">Total duration</td>
+                    <td class="val right">{{ total_duration_minutes|default:0|minutes_to_hm }}</td>
+                </tr>
+            </table>
+
+            <p class="muted" style="margin: 8px 0 0 0;">
+                Note: Generated schedule uses planning assumptions and is intended for dispatcher estimation.
+            </p>
+        </div>
+    </div>
+</div>
+
+<div class="block">
+    <p class="block__title">Schedule</p>
+
+    {% if schedule_rows %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th class="col-day">Day</th>
+                    <th class="col-task">Task</th>
+                    <th class="col-time">Duration</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in schedule_rows %}
+                    {# Expected row format: "Day X: TASK – Nh Nmin" #}
+                    <tr>
+                        <td class="col-day">
+                            {# Extract "Day X" #}
+                            {{ row|cut:"" }}
+                            {% with day_part=row|slice:":0" %}
+                                {# fallback: show raw if parsing fails #}
+                            {% endwith %}
+                            {{ row|slice:":0" }}
+                        </td>
+                        <td class="col-task">
+                            {% if "Driving" in row %}
+                                <span class="tag tag--drive">DRIVE</span>
+                            {% elif "Break" in row %}
+                                <span class="tag tag--break">BREAK</span>
+                            {% elif "rest" in row or "Rest" in row %}
+                                <span class="tag tag--rest">REST</span>
+                            {% else %}
+                                <span class="tag tag--work">WORK</span>
+                            {% endif %}
+                            &nbsp;{{ row }}
+                        </td>
+                        <td class="col-time">
+                            {# Best effort: duration is after " – " #}
+                            {% if " – " in row %}
+                                {{ row|cut:row|safe }}
+                            {% endif %}
+                            {{ row|slice:"-10:" }}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <p class="muted" style="margin: 10px 0 0 0;">
+            Tip: Keep this report as a planning reference; exact tachograph compliance requires operational conditions.
+        </p>
+    {% else %}
+        <p class="muted">No schedule data available.</p>
+    {% endif %}
+</div>
+
+</body>
+</html>

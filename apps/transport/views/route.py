@@ -46,7 +46,7 @@ class RouteCreateView(LoginRequiredMixin, View):
             route = form.save(commit=False)
             route.user = request.user
             route.save()
-            return redirect("route-list")
+            return redirect("calculation-create")
 
         return render(request, "transport/route/route_form.html", {"form": form})
 

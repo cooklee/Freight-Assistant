@@ -14,6 +14,7 @@ from apps.messaging.models import Conversation, Message
 from apps.transport.models import Route, Calculation
 from apps.transport.models import Stop, STOP_TYPE_CHOICES
 from apps.transport.models import TransportOrder
+from apps.transport.services.calculation_service import apply_schedule
 
 fake = Faker("pl_PL")
 User = get_user_model()
@@ -50,7 +51,7 @@ class Command(BaseCommand):
         self._create_transport_orders(customers, carriers, drivers, routes)
 
         self.stdout.write(self.style.WARNING("Creating calculations..."))
-        self._create_calculations(routes, carriers, drivers)
+        self._create_calculations(routes, carriers, drivers, test_user)
 
         self.stdout.write(self.style.WARNING("Creating messaging demo..."))
         self._create_messaging(users)
@@ -211,14 +212,16 @@ class Command(BaseCommand):
         for _ in range(count):
             customer = random.choice(customers)
             carrier = random.choice(carriers)
-            driver_1 = random.choice(drivers)
-            driver_2 = random.choice(drivers) if random.choice([True, False]) else None
+            carrier_drivers = [d for d in drivers if d.carrier_id == carrier.id]
+            driver_1 = random.choice(carrier_drivers) if carrier_drivers else None
+            driver_2 = random.choice(carrier_drivers) if carrier_drivers and random.choice([True, False]) else None
             route = random.choice(routes)
 
             stops = list(route.stops.all())
             distance = random.randint(300, 2200)
 
             TransportOrder.objects.create(
+                user=route.user,
                 customer=customer,
                 carrier=carrier,
                 driver_1=driver_1,
@@ -235,27 +238,34 @@ class Command(BaseCommand):
                 profit=Decimal(distance) * Decimal("1.50") - Decimal(distance) * Decimal("0.95"),
             )
 
-    # CALCULATIONS (mock)
+    # CALCULATIONS (apply_schedule + mock)
 
-    def _create_calculations(self, routes, carriers, drivers):
+    def _create_calculations(self, routes, carriers, drivers, test_user):
         for route in routes:
             carrier = random.choice(carriers)
             chosen = random.sample(drivers, k=random.randint(1, 2))
 
-            Calculation.objects.create(
+            calculation = Calculation(
+                user=route.user,
                 route=route,
                 carrier=carrier,
                 driver_1=chosen[0],
                 driver_2=chosen[1] if len(chosen) == 2 else None,
                 date=date.today() - timedelta(days=random.randint(0, 30)),
-                total_km=random.randint(200, 2200),
-                total_drive_time_minutes=random.randint(300, 900),
-                total_break_time_minutes=random.randint(30, 200),
-                total_rest_time_minutes=random.randint(200, 600),
-                total_other_work_time_minutes=random.randint(30, 200),
-                admin_time_minutes=random.randint(10, 60),
-                schedule="Generated schedule data (mock)",
             )
+
+            if route.user == test_user:
+                apply_schedule(calculation)
+            else:
+                calculation.total_km = random.randint(200, 2200)
+                calculation.total_drive_time_minutes = random.randint(300, 900)
+                calculation.total_break_time_minutes = random.randint(30, 200)
+                calculation.total_rest_time_minutes = random.randint(200, 600)
+                calculation.total_other_work_time_minutes = random.randint(30, 200)
+                calculation.admin_time_minutes = random.randint(10, 60)
+                calculation.schedule = "Generated schedule data (mock)"
+
+            calculation.save()
 
     # MESSAGING
 

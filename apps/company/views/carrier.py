@@ -23,8 +23,8 @@ class CarrierAddView(LoginRequiredMixin, View):
         form = CarrierForm(request.POST)
 
         if form.is_valid():
-            form.save()
-            return redirect('dashboard')
+            carrier = form.save()
+            return redirect('carrier-detail', carrier_id=carrier.id)
         return render(request, 'company/carrier/carrier_add.html', {'form': form})
 
 
@@ -52,7 +52,7 @@ class CarrierUpdateView(LoginRequiredMixin, View):
         form = CarrierForm(request.POST, instance=carrier)
         if form.is_valid():
             form.save()
-            return redirect('dashboard')
+            return redirect('carrier-detail', carrier_id=carrier.id)
         return render(request, 'company/carrier/carrier_update.html', {'form': form})
 
 
@@ -68,4 +68,4 @@ class CarrierDeleteView(LoginRequiredMixin, View):
             Carrier, id=carrier_id
         )
         carrier.delete()
-        return redirect('dashboard')
+        return redirect('carrier-list')

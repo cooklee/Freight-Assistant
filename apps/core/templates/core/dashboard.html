@@ -1,44 +1,140 @@
 {% extends "base.html" %}
-{% load static %}
 
 {% block title %}Dashboard{% endblock %}
 
 {% block content %}
-<div class="p-4">
+<div class="my-10 space-y-6">
 
-    <h1 class="text-3xl font-bold mb-4">Dashboard</h1>
-    <p class="text-gray-600 mb-6">
-        Welcome to your Freight Assistant dashboard.
-    </p>
-
-
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-
-        <div class="card bg-base-100 shadow">
-            <div class="card-body">
-                <h2 class="card-title">Transport Orders</h2>
-                <p>Manage, add and track transport orders.</p>
-                <a href="#" class="btn btn-primary btn-sm mt-2">Open</a>
-            </div>
-        </div>
-
-        <div class="card bg-base-100 shadow">
-            <div class="card-body">
-                <h2 class="card-title">Messages</h2>
-                <p>Chat with drivers and coworkers in your company.</p>
-                <a href="#" class="btn btn-primary btn-sm mt-2">Open</a>
-            </div>
-        </div>
-
-        <div class="card bg-base-100 shadow">
-            <div class="card-body">
-                <h2 class="card-title">Drivers</h2>
-                <p>View, manage and assign drivers to routes.</p>
-                <a href="#" class="btn btn-primary btn-sm mt-2">Open</a>
-            </div>
-        </div>
-
+  <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+    <div>
+      <h1 class="text-3xl font-bold">Dashboard</h1>
+      <p class="text-sm text-gray-500">
+        Quick overview of your dispatch workspace.
+      </p>
     </div>
+
+    <!-- Quick actions -->
+    <div class="flex flex-wrap gap-2">
+      <a href="{% url 'order-create' %}" class="btn btn-primary btn-sm">+ New Order</a>
+      <a href="{% url 'calculation-create' %}" class="btn btn-sm">+ New Calculation</a>
+      <a href="{% url 'route-with-stops' %}" class="btn btn-sm">+ New Route</a>
+      <a href="{% url 'conversation-list' %}" class="btn btn-sm btn-outline">Messages</a>
+    </div>
+  </div>
+
+  <!-- KPI tiles -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div class="stat bg-base-100 shadow rounded-box">
+      <div class="stat-title">Transport Orders</div>
+      <div class="stat-value">{{ counts.orders }}</div>
+      <div class="stat-desc">Total in your workspace</div>
+    </div>
+
+    <div class="stat bg-base-100 shadow rounded-box">
+      <div class="stat-title">Calculations</div>
+      <div class="stat-value">{{ counts.calculations }}</div>
+      <div class="stat-desc">Generated schedules</div>
+    </div>
+
+    <div class="stat bg-base-100 shadow rounded-box">
+      <div class="stat-title">Routes</div>
+      <div class="stat-value">{{ counts.routes }}</div>
+      <div class="stat-desc">Saved multi-stop routes</div>
+    </div>
+
+    <div class="stat bg-base-100 shadow rounded-box">
+      <div class="stat-title">Drivers</div>
+      <div class="stat-value">{{ counts.drivers }}</div>
+      <div class="stat-desc">Available in carriers</div>
+    </div>
+  </div>
+
+  <!-- Alerts + recent -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <!-- Alerts -->
+    <div class="lg:col-span-1 space-y-3">
+      <h2 class="text-xl font-semibold">Attention needed</h2>
+
+      {% if alerts %}
+        <div class="space-y-2">
+          {% for a in alerts %}
+            <div class="alert alert-warning shadow">
+              <div>
+                <div class="font-semibold">{{ a.title }}</div>
+                <div class="text-sm opacity-80">{{ a.text }}</div>
+              </div>
+              {% if a.url %}
+                <a class="btn btn-sm" href="{{ a.url }}">Open</a>
+              {% endif %}
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="alert alert-success shadow">
+          <div>
+            <div class="font-semibold">All good</div>
+            <div class="text-sm opacity-80">No issues detected.</div>
+          </div>
+        </div>
+      {% endif %}
+    </div>
+
+    <!-- Recent orders -->
+    <div class="lg:col-span-1">
+      <div class="flex items-center justify-between mb-2">
+        <h2 class="text-xl font-semibold">Recent orders</h2>
+        <a href="{% url 'order-list' %}" class="link link-hover text-sm">View all</a>
+      </div>
+
+      <div class="card bg-base-100 shadow">
+        <div class="card-body">
+          {% if recent_orders %}
+            <ul class="space-y-2">
+              {% for o in recent_orders %}
+                <li class="flex items-center justify-between">
+                  <div>
+                    <div class="font-medium">{{ o.customer.name }} → {{ o.carrier.name }}</div>
+                    <div class="text-sm text-gray-500">#{{ o.id }} • {{ o.distance_km }} km</div>
+                  </div>
+                  <a href="{% url 'order-detail' o.id %}" class="btn btn-sm">Open</a>
+                </li>
+              {% endfor %}
+            </ul>
+          {% else %}
+            <p class="text-sm text-gray-500">No orders yet.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent calculations -->
+    <div class="lg:col-span-1">
+      <div class="flex items-center justify-between mb-2">
+        <h2 class="text-xl font-semibold">Recent calculations</h2>
+        <a href="{% url 'calculation-list' %}" class="link link-hover text-sm">View all</a>
+      </div>
+
+      <div class="card bg-base-100 shadow">
+        <div class="card-body">
+          {% if recent_calculations %}
+            <ul class="space-y-2">
+              {% for c in recent_calculations %}
+                <li class="flex items-center justify-between">
+                  <div>
+                    <div class="font-medium">{{ c.route.name }}</div>
+                    <div class="text-sm text-gray-500">#{{ c.id }} • {{ c.total_km }} km</div>
+                  </div>
+                  <a href="{% url 'calculation-detail' c.id %}" class="btn btn-sm">Open</a>
+                </li>
+              {% endfor %}
+            </ul>
+          {% else %}
+            <p class="text-sm text-gray-500">No calculations yet.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
 
 </div>
 {% endblock %}

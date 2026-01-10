@@ -2,7 +2,15 @@
 
 {% block title %}Calculations{% endblock %}
 
+
 {% block content %}
+    <input
+            type="text"
+            placeholder="Search"
+            class="input input-bordered w-full mb-4"
+            autocomplete="off"
+            data-live-search="calculations"
+    />
     <div class="static justify-between items-center mb-6">
         <h1 class="text-3xl font-bold">Calculations</h1>
         <a href="{% url 'calculation-create' %}" class="btn btn-primary">New Calculation</a>
@@ -12,7 +20,11 @@
         <div class="space-y-4">
             {% for c in calculations %}
                 <a href="{% url 'calculation-detail' c.id %}" class="block">
-                    <div class="card bg-base-100 shadow-md hover:shadow-xl transition-all">
+                    <div class="card bg-base-100 shadow-md hover:shadow-xl transition-all"
+                         data-live-group="calculations"
+                         data-live-item
+                         data-search="{{ c.route.name }} {{ c.date }} {{ c.carrier.name }}"
+                    >
                         <div class="card-body">
                             <h2 class="card-title">{{ c.route.name }} ({{ c.date }})</h2>
                             <p>

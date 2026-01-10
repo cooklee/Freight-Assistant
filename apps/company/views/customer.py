@@ -22,8 +22,8 @@ class CustomerAddView(LoginRequiredMixin, View):
         form = CustomerForm(request.POST)
 
         if form.is_valid():
-            form.save()
-            return redirect('customer-list')
+            customer = form.save()
+            return redirect('customer-list', customer_id=customer.id)
 
         return render(request, 'company/customer/customer_add.html', {'form': form})
 

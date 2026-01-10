@@ -1,0 +1,13 @@
+SECRET_KEY=your-secret-key
+GOOGLE_MAPS_API_KEY=your-google-maps-api-key
+
+# Database
+DB_NAME=freight_assistant
+DB_USER=postgres
+DB_PASSWORD=postgres
+DB_HOST=localhost
+DB_PORT=5432
+
+# Populate test user
+TEST_USERNAME=test_user
+TEST_USER_PASS=test1234

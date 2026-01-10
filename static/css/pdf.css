@@ -1,0 +1,218 @@
+/* Page setup */
+@page {
+    size: A4;
+    margin: 18mm 14mm 18mm 14mm;
+
+    @bottom-left {
+        content: "Freight Assistant • Schedule report";
+        font-size: 9px;
+        color: #6b7280;
+    }
+
+    @bottom-right {
+        content: "Page " counter(page) " / " counter(pages);
+        font-size: 9px;
+        color: #6b7280;
+    }
+}
+
+/* Base */
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    font-family: "DejaVu Sans", sans-serif;
+    font-size: 11px;
+    color: #111827;
+    line-height: 1.35;
+}
+
+hr {
+    border: none;
+    border-top: 1px solid #e5e7eb;
+    margin: 12px 0;
+}
+
+/* Header */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #111827;
+    margin-bottom: 14px;
+}
+
+.header__title {
+    font-size: 18px;
+    font-weight: 700;
+    margin: 0;
+}
+
+.header__subtitle {
+    margin: 2px 0 0 0;
+    color: #6b7280;
+    font-size: 10px;
+}
+
+.badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border: 1px solid #111827;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 600;
+}
+
+/* Layout blocks */
+.block {
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 12px;
+    margin-bottom: 12px;
+}
+
+.block__title {
+    font-size: 12px;
+    font-weight: 700;
+    margin: 0 0 8px 0;
+}
+
+.grid-2 {
+    display: flex;
+    gap: 12px;
+}
+
+.grid-2 > .col {
+    flex: 1;
+}
+
+/* Key-value table */
+.kv {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.kv td {
+    padding: 4px 0;
+    vertical-align: top;
+}
+
+.kv td.key {
+    width: 35%;
+    color: #6b7280;
+}
+
+.kv td.val {
+    width: 65%;
+    font-weight: 600;
+}
+
+/* Summary row */
+.summary {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 6px;
+}
+
+.summary__item {
+    flex: 1 1 160px;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+.summary__label {
+    color: #6b7280;
+    font-size: 10px;
+    margin: 0;
+}
+
+.summary__value {
+    font-size: 14px;
+    font-weight: 800;
+    margin: 4px 0 0 0;
+}
+
+/* Schedule table */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table thead th {
+    text-align: left;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #6b7280;
+    padding: 8px;
+    border-bottom: 2px solid #111827;
+}
+
+.table tbody td {
+    padding: 8px;
+    border-bottom: 1px solid #e5e7eb;
+    vertical-align: top;
+}
+
+.table tbody tr {
+    page-break-inside: avoid;
+}
+
+.table .col-day {
+    width: 12%;
+    font-weight: 700;
+}
+
+.table .col-task {
+    width: 68%;
+}
+
+.table .col-time {
+    width: 20%;
+    text-align: right;
+    white-space: nowrap;
+    font-weight: 700;
+}
+
+/* Task highlighting (optional but nice) */
+.tag {
+    display: inline-block;
+    padding: 2px 6px;
+    border-radius: 999px;
+    font-size: 10px;
+    border: 1px solid #e5e7eb;
+    color: #374151;
+}
+
+.tag--drive {
+    border-color: #111827;
+    color: #111827;
+}
+
+.tag--break {
+    border-color: #9ca3af;
+    color: #374151;
+}
+
+.tag--rest {
+    border-color: #6b7280;
+    color: #111827;
+}
+
+.tag--work {
+    border-color: #d1d5db;
+    color: #111827;
+}
+
+/* Small helpers */
+.muted {
+    color: #6b7280;
+}
+
+.right {
+    text-align: right;
+}

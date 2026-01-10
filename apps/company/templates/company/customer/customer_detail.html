@@ -3,64 +3,75 @@
 {% block title %}Customer Detail{% endblock %}
 
 {% block content %}
-<div class="max-w-3xl mx-auto bg-base-100 p-6 rounded-xl shadow">
+    <input
+            type="text"
+            placeholder="Search"
+            class="input input-bordered w-full mb-4"
+            autocomplete="off"
+            data-live-search="branches"
+    />
+    <div class="max-w-3xl mx-auto bg-base-100 p-6 rounded-xl shadow">
 
-    <h2 class="text-2xl font-bold mb-4">{{ customer.name }}</h2>
+        <h2 class="text-2xl font-bold mb-4">{{ customer.name }}</h2>
 
-    <div class="space-y-2 mb-6">
-        <p><span class="font-semibold">NIP:</span> {{ customer.nip }}</p>
-        <p><span class="font-semibold">Address:</span> {{ customer.address }}</p>
-        <p><span class="font-semibold">Email:</span> {{ customer.email }}</p>
-        <p><span class="font-semibold">Phone:</span> {{ customer.phone }}</p>
-    </div>
+        <div class="space-y-2 mb-6">
+            <p><span class="font-semibold">NIP:</span> {{ customer.nip }}</p>
+            <p><span class="font-semibold">Address:</span> {{ customer.address }}</p>
+            <p><span class="font-semibold">Email:</span> {{ customer.email }}</p>
+            <p><span class="font-semibold">Phone:</span> {{ customer.phone }}</p>
+        </div>
 
-    <!-- ACTION BUTTONS -->
-    <div class="space-x-2 mb-8">
-        <a href="{% url 'customer-update' customer.id %}" class="btn btn-primary">Edit</a>
-        <a href="{% url 'customer-delete' customer.id %}" class="btn btn-warning">Delete</a>
-        <a href="{% url 'customer-list' %}" class="btn">Back</a>
-    </div>
+        <!-- ACTION BUTTONS -->
+        <div class="space-x-2 mb-8">
+            <a href="{% url 'customer-update' customer.id %}" class="btn btn-primary">Edit</a>
+            <a href="{% url 'customer-delete' customer.id %}" class="btn btn-warning">Delete</a>
+            <a href="{% url 'customer-list' %}" class="btn">Back</a>
+        </div>
 
-    <!-- BRANCHES HEADER WITH ADD BUTTON -->
-    <div class="items-center justify-between mb-3">
-        <h3 class="text-xl font-semibold">Branches</h3>
+        <!-- BRANCHES HEADER WITH ADD BUTTON -->
+        <div class="items-center justify-between mb-3">
+            <h3 class="text-xl font-semibold">Branches</h3>
 
-        <a href="{% url 'branch-add' customer.id %}"
-           class="btn btn-sm btn-primary">
-            + Add Branch
-        </a>
-    </div>
+            <a href="{% url 'branch-add' customer.id %}"
+               class="btn btn-sm btn-primary">
+                + Add Branch
+            </a>
+        </div>
 
-    {% if branches %}
-        <div class="space-y-3">
-            {% for branch in branches %}
-                <div class="bg-base-200 p-4 rounded border border-base-300">
-                    <div class=" justify-between items-center">
-                        <div>
-                            <p class="font-semibold">{{ branch.name }}</p>
-                            <p class="text-sm text-gray-600">{{ branch.address }}</p>
-                        </div>
+        {% if branches %}
+            <div class="space-y-3">
+                {% for branch in branches %}
+                    <div class="bg-base-200 p-4 rounded border border-base-300"
+                         data-live-group="branches"
+                         data-live-item
+                         data-search="{{ branch.name }} {{ branch.address }}"
+                    >
+                        <div class=" justify-between items-center">
+                            <div>
+                                <p class="font-semibold">{{ branch.name }}</p>
+                                <p class="text-sm text-gray-600">{{ branch.address }}</p>
+                            </div>
 
-                        <div class="space-x-2">
-                            <a href="{% url 'branch-update' branch.id %}"
-                               class="btn btn-sm btn-primary">
-                                Edit
-                            </a>
+                            <div class="space-x-2">
+                                <a href="{% url 'branch-update' branch.id %}"
+                                   class="btn btn-sm btn-primary">
+                                    Edit
+                                </a>
 
-                            <a href="{% url 'branch-delete' branch.id %}"
-                               class="btn btn-sm btn-warning">
-                                Delete
-                            </a>
+                                <a href="{% url 'branch-delete' branch.id %}"
+                                   class="btn btn-sm btn-warning">
+                                    Delete
+                                </a>
+                            </div>
                         </div>
                     </div>
-                </div>
-            {% endfor %}
-        </div>
-    {% else %}
-        <p class="text-gray-500 italic">
-            This customer has no registered branches.
-        </p>
-    {% endif %}
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-gray-500 italic">
+                This customer has no registered branches.
+            </p>
+        {% endif %}
 
-</div>
+    </div>
 {% endblock %}

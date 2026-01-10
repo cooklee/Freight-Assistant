@@ -1,73 +1,94 @@
 # Freight Assistant 🚛
+![Python](https://img.shields.io/badge/python-3.x-blue)
+![Django](https://img.shields.io/badge/django-5.x-green)
 
 **Freight Assistant** is a Django-based web application designed to support freight forwarders
-in planning and validating truck routes according to **EU driving time regulations**.
+and dispatchers in planning and validating truck routes according to **EU driving time regulations (EC 561/2006)**.
 
-The main goal of the project is to automatically calculate:
+The core goal of the project is to **automatically generate a realistic transport schedule**, including:
+
 - driving time,
 - mandatory breaks,
 - daily and weekly rests,
-- loading/unloading and administrative work,
+- loading, unloading and administrative work,
 
-so that a dispatcher can estimate a full transport schedule **in seconds instead of 1–2 hours of manual calculations**.
-
-> ⚠️ The project is under active development. Core planning logic is already implemented and continuously refined.
+allowing a dispatcher to estimate a full transport plan **in seconds instead of 1–2 hours of manual calculations**.
 
 ---
 
-## 🧠 What problem does this project solve?
+## 🧠 Problem statement
 
 In real-life freight forwarding:
-- route planning must respect strict EU regulations (EC 561/2006),
-- manual calculations are error-prone and time-consuming,
-- even small mistakes can lead to fines or invalid schedules.
 
-**Freight Assistant automates this process**, providing a realistic, dispatcher-oriented schedule
-that can be relied on for operational planning.
+- route planning must comply with strict EU regulations,
+- manual calculations are time-consuming and error-prone,
+- even small mistakes may lead to fines or invalid schedules.
+
+**Freight Assistant automates this process**, producing a dispatcher-friendly, step-by-step schedule
+that can be reliably used for operational planning and decision-making.
 
 ---
 
-## ⚙️ Key features (current)
+## ⚙️ Key features
 
 ✅ User-based data isolation (multi-user system)  
 ✅ Route creation with multiple stops (loading, unloading, partial operations)  
-✅ Automatic distance & duration calculation using Google Maps API  
-✅ Schedule builder respecting:
+✅ Google Maps integration for distance and travel time calculation  
+✅ Automatic schedule generation respecting:
 - 4.5h continuous driving limit,
 - mandatory 45-minute breaks,
-- daily and weekly rests,
+- daily and weekly rest requirements,
 - single-driver and double-driver crews  
 ✅ Clear breakdown of:
 - driving time,
 - breaks,
 - rests,
-- other work (loading / unloading / admin)  
+- other work (loading / unloading / administration)  
+✅ PDF export of transport schedules  
+✅ Live client-side filtering on list views (no page reloads)
 
 ---
 
-## 🧮 How the schedule builder works (high-level)
+## 🧮 Schedule builder – high-level overview
 
-1. The route is split into legs between stops.
+1. A route is split into legs between consecutive stops.
 2. Each leg’s distance and driving time is fetched from Google Maps.
-3. Driving time is accumulated **across multiple legs** until it reaches 4h30.
+3. Driving time is accumulated **across multiple legs** until the 4h30 limit is reached.
 4. Mandatory breaks are inserted automatically.
-5. Loading/unloading time is treated as **work**, not rest.
-6. Daily and weekly limits are enforced using planner-friendly heuristics.
-7. The final result is a readable, step-by-step schedule.
+5. Loading/unloading is treated as **work time**, not rest.
+6. Daily and weekly limits are enforced using planner-oriented heuristics.
+7. The final output is a readable, step-by-step schedule compliant with EU regulations.
 
-The logic is implemented in a dedicated service:
+The scheduling logic is implemented as a **dedicated service layer**, separated from views and templates,
+making it testable, readable and easy to extend.
+
+---
+
+## 🏗 Architecture & code structure
+
+This project is a **second iteration**, written fully from scratch.
+Compared to the previous version, it introduces a significantly cleaner architecture:
+
+- clear separation between:
+  - views (HTTP layer),
+  - services (business logic),
+  - templates (presentation),
+- modular Django app structure,
+- minimal logic in views,
+- business rules encapsulated in dedicated service classes,
+- extensive use of Django class-based views and mixins,
+- test coverage for key business logic.
+
+This architecture improves maintainability, testability and overall code clarity.
 
 ---
 
 ## 🖼 Application screenshots
 
-Below are example screenshots from the current development version of the application.
-They illustrate the core features and overall UI structure.
-
----
+Screenshots below present the current development version of the application.
 
 ### 📊 Calculations list
-List of transport calculations with basic route and distance overview.
+Overview of transport calculations with route and distance summary.
 
 ![Calculations list](screenshots/calculations_list.png)
 
@@ -79,32 +100,25 @@ Detailed calculation view with:
 - driving time,
 - breaks,
 - rests,
-- and a step-by-step schedule generated according to EU regulations.
+- step-by-step EU-compliant schedule.
 
 ![Calculation detail](screenshots/calculation_detail.png)
 
 ---
 
 ### 🚚 Transport orders list
-Overview of transport orders with:
-- customer,
-- carrier,
-- distance,
-- and profit calculation.
+Transport orders overview including customer, carrier, distance and profit.
 
 ![Transport orders list](screenshots/transport_orders_list.png)
 
 ---
 
 ### 📄 Transport order details
-Detailed transport order view including:
-- customer and carrier data,
-- assigned drivers,
-- pricing and profitability breakdown.
+Detailed transport order view with pricing and profitability breakdown.
 
 ![Transport order detail](screenshots/transport_order_detail.png)
 
-> Dates visible in screenshots come from development seed data (`populate.py`) and are used only for demonstration purposes.
+> Dates visible in screenshots come from development seed data (`populate.py`) and are used for demonstration purposes only.
 
 ---
 
@@ -114,33 +128,119 @@ Detailed transport order view including:
 - Django
 - PostgreSQL
 - Google Maps Platform:
-  - Distance Matrix API (distance & travel time calculations)
-  - Places Autocomplete API (validated address input for route stops)
+  - Distance Matrix API
+  - Places Autocomplete API
 - HTML / Django Templates
-- Tailwind CSS (utility-based styling)
+- Tailwind CSS + DaisyUI
+- Pytest
+- WeasyPrint (PDF generation)
 
+A full list of dependencies is available in `requirements.txt`.
 
 ---
 
-## 🚧 Project status
+## 📌 Project status
 
-This project is **not finished yet**.
+The project is **feature-complete for its current scope** and represents a finished, working solution.
+Further development would focus on refinements and additional business scenarios rather than core functionality.
 
-Planned features:
-- PDF export of transport schedules,
-- more accurate weekly rest compensation handling,
-- improved UX for large multi-stop routes,
-- automated tests for schedule logic.
-
-The repository is intended as a **portfolio project** demonstrating:
-- backend logic,
-- real-world business rules,
+This repository serves as a **portfolio project**, showcasing:
+- real-world business logic,
+- EU regulation-driven constraints,
 - clean Django architecture,
-- incremental refactoring and bug fixing.
+- separation of concerns,
+- incremental development and refactoring.
 
 ---
+
+## 🚀 How to run locally (development)
+
+### 1) Clone the repository
+```bash
+git clone https://github.com/Shizol01/Freight-Assistant.git
+cd Freight-Assistant
+```
+
+### 2) Create and activate virtual environment
+```bash
+python -m venv .venv
+source .venv/bin/activate   # Linux / macOS
+# .venv\Scripts\activate    # Windows (PowerShell)
+```
+
+### 3) Install dependencies
+```bash
+pip install -r requirements.txt
+```
+
+### 4) Environment configuration
+Create a `.env` file in the project root directory:
+
+```env
+SECRET_KEY=your-secret-key
+GOOGLE_MAPS_API_KEY=your-google-maps-api-key
+
+# Database
+DB_NAME=freight_assistant
+DB_USER=postgres
+DB_PASSWORD=postgres
+DB_HOST=localhost
+DB_PORT=5432
+
+# Populate test user
+TEST_USERNAME=test_user
+TEST_USER_PASS=test1234
+```
+
+> `GOOGLE_MAPS_API_KEY` is required for:
+> - Google Distance Matrix API (distance & travel time)
+> - Google Places Autocomplete API (validated stop locations)
+
+### 5) Database setup
+Make sure PostgreSQL is running and the database exists.
+
+```bash
+python manage.py migrate
+```
+
+### 6) Populate demo data (recommended)
+```bash
+python manage.py populate
+```
+
+This command creates demo data:
+- users (including test user),
+- customers and branches,
+- carriers and drivers,
+- routes with stops,
+- transport orders,
+- calculations with schedules (uses Google Distance Matrix API) ,
+- demo messaging conversations.
+
+### 7) Run development server
+```bash
+python manage.py runserver
+```
+
+Open in browser:
+```
+http://127.0.0.1:8000/
+```
+
+### 8) Login credentials (after populate)
+```
+username: test_user
+password: test1234
+```
+
+### Notes
+- Django 5 + PostgreSQL
+- User-based data isolation
+- Dates visible in the UI come from development seed data (`populate.py`)
+
 
 ## 👤 Author
 
 Created by **Shizol01**  
-Python / Django developer  
+Python / Django Developer
+

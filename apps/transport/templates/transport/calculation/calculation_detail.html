@@ -33,8 +33,11 @@
             <p class="mt-3"><strong>Total duration (hours):</strong> {{ total_duration_minutes|minutes_to_hm }}</p>
         </div>
     </div>
-
+    <div>
     <h2 class="text-2xl font-semibold mb-2">Schedule</h2>
+     <a href="{% url 'calculation-pdf' calculation.id %}" class="btn btn-primary">Export to PDF</a>
+    </div>
+
 
     <div class="card bg-base-100 shadow-md">
         <div class="card-body">

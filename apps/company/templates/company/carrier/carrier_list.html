@@ -2,39 +2,42 @@
 {% block title %}Carriers{% endblock %}
 
 {% block content %}
+    <input
+            type="text"
+            placeholder="Search"
+            class="input input-bordered w-full mb-4"
+            autocomplete="off"
+            data-live-search="carriers"
+    />
 
 
-<div class="flex justify-end mb-4">
-    <a href="{% url 'carrier-add' %}" class="btn btn-primary">
-        + Add Carrier
-    </a>
-</div>
 
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-bold mb-2">Carriers</h1>
+        <div class="flex mb-4">
+            <a href="{% url 'carrier-add' %}" class="btn btn-primary">
+                + Add Carrier
+            </a>
+        </div>
+        <div class="space-y-4">
+            {% for carrier in carriers %}
+                <div
+                        class="bg-base-100 p-4 rounded shadow-sm border border-base-300"
+                        data-live-group="carriers"
+                        data-live-item
+                        data-search="{{ carrier.name }} {{ carrier.nip }} {{ carrier.address }}"
+                >
+                    <p class="font-semibold text-lg">{{ carrier.name }}</p>
+                    <p class="text-sm text-gray-600">NIP: {{ carrier.nip }}</p>
+                    <p class="text-sm text-gray-600">{{ carrier.address }}</p>
 
-<div class="max-w-4xl mx-auto">
-
-    <h1 class="text-3xl font-bold mb-2">Carriers</h1>
-
-    <p class="text-sm text-gray-500 mb-6">
-        List of all transportation providers.
-    </p>
-
-    <div class="space-y-4">
-        {% for carrier in carriers %}
-            <div class="bg-base-100 p-4 rounded shadow-sm border border-base-300">
-                <p class="font-semibold text-lg">{{ carrier.name }}</p>
-                <p class="text-sm text-gray-600">NIP: {{ carrier.nip }}</p>
-                <p class="text-sm text-gray-600">{{ carrier.address }}</p>
-
-                <div class="mt-3 space-x-2 ">
-                    <a href="{% url 'carrier-detail' carrier.id %}" class="btn btn-sm">Details</a>
-                    <a href="{% url 'carrier-update' carrier.id %}" class="btn btn-sm btn-primary">Edit</a>
-                    <a href="{% url 'carrier-delete' carrier.id %}" class="btn btn-sm btn-warning">Delete</a>
+                    <div class="mt-3 space-x-2">
+                        <a href="{% url 'carrier-detail' carrier.id %}" class="btn btn-sm">Details</a>
+                        <a href="{% url 'carrier-update' carrier.id %}" class="btn btn-sm btn-primary">Edit</a>
+                        <a href="{% url 'carrier-delete' carrier.id %}" class="btn btn-sm btn-warning">Delete</a>
+                    </div>
                 </div>
-            </div>
-        {% endfor %}
+            {% endfor %}
+        </div>
     </div>
-
-</div>
-
 {% endblock %}

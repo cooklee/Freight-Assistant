@@ -7,6 +7,7 @@ from .views import (
     CalculationCreateView,
     CalculationUpdateView,
     CalculationDeleteView,
+    CalculationPdfView
 )
 # ROUTE views
 from .views import (
@@ -60,6 +61,7 @@ urlpatterns = [
     path("calculations/add/", CalculationCreateView.as_view(), name="calculation-create"),
     path("calculations/<int:calculation_id>/update/", CalculationUpdateView.as_view(), name="calculation-update"),
     path("calculations/<int:calculation_id>/delete/", CalculationDeleteView.as_view(), name="calculation-delete"),
+    path("calculations/<int:calculation_id>/pdf/", CalculationPdfView.as_view(), name="calculation-pdf"),
 
     # TRANSPORT ORDERS
     path("orders/", TransportOrderListView.as_view(), name="order-list"),
