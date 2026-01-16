@@ -5,6 +5,7 @@ from django.views import View
 from ..forms import CarrierForm
 from ..models import Carrier
 from ...drivers.models import Driver
+#todo importy dla mnie jedna kropka jest dopiszczalna wiecej juz nie bo skaczesz i zaburzasz czytelność
 
 
 class CarrierListView(LoginRequiredMixin, View):
@@ -35,6 +36,17 @@ class CarrierDetailView(LoginRequiredMixin, View):
         )
         drivers = Driver.objects.filter(carrier=carrier)
         return render(request, 'company/carrier/carrier_detail.html', {'carrier': carrier, 'drivers': drivers})
+#todo tego tak nie musisz robic
+#todo warto tez dodać prefetch_related
+"""
+draviers = carrier.drivers.all() mozesz zastąpić carrier.driver_set.all() -> ale skoro potrzebujesz tego w szablonie to w szablonie mozesz to zrobić tak samo 
+a optymalnie jest zrobienie tego tak:
+carrier = get_object_or_404(
+    Carrier.objects.prefetch_related("driver_set"),
+    id=carrier_id
+)
+dzieku temu wszyscy driverrzy beda juz w carreierze i nie bedzie trzeba robić kolejnego uderzenia do bazy dancyh 
+"""
 
 
 class CarrierUpdateView(LoginRequiredMixin, View):
@@ -69,3 +81,5 @@ class CarrierDeleteView(LoginRequiredMixin, View):
         )
         carrier.delete()
         return redirect('carrier-list')
+
+#todo warto tez ustawić sortowanie .order_by("name") albo w modelach + paginacja

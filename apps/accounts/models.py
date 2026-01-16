@@ -5,6 +5,13 @@ from django.db import models
 def profile_upload_path(instance, filename):
     return f"profile_pics/{instance.user.id}/{filename}"
 
+#todo jesli kiedykolwiek bedziesz zapisywać userProfile zanim zapiszesz usera to wybuchnie
+"""
+można zrobić tak np
+def profile_upload_path(instance, filename):
+    user_id = instance.user_id or "unknown"
+    return f"profile_pics/{user_id}/{filename}"
+"""
 
 class UserProfile(models.Model):
     """
@@ -18,6 +25,7 @@ class UserProfile(models.Model):
     )
 
     is_moderator = models.BooleanField(default=False)
+    #todo nie ma tragedi ale polecam uzywac wbudowanych djangowych is_staff, is_superuser lub Group
     about_me = models.TextField(blank=True)
     job = models.CharField(max_length=120, blank=True)
     country = models.CharField(max_length=64, blank=True)
@@ -38,7 +46,13 @@ class UserProfile(models.Model):
     def __str__(self):
         return f"{self.user.username} Profile"
 
+#todo Brak walidacji/normalizacji dla pól typu warto zrobić plik validators.py i je tam umieszczać
 
+
+#todo zgaduje ze użyłeś proxymodelu bo nie miałeś gdzie nadpisać metody __str__, ale to troche mija sie ze sztuka
+#todo proxy model bardziej zapisuje służy do tego by na tej samej tabeli mieć 2 różne zachowania.
+#todo natomiast tutaj dochodzimi do problemu związanego z fakte ze używasz wbudowanego użytkownika powinnieneś zrobić
+# customowego użytkownia https://testdriven.io/blog/django-custom-user-model/ tu masz całkiem fajny tutorial
 class AppUser(User):
     class Meta:
         proxy = True

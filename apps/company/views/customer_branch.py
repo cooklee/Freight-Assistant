@@ -9,12 +9,14 @@ from ..models import CustomerBranch, Customer
 class CustomerBranchListView(LoginRequiredMixin, View):
     def get(self, request):
         branches = CustomerBranch.objects.all()
+        #todo jestes tego pewien dodział wsztstjue bez kontekstu klienta ?
         return render(request, 'company/customer_branch/customer_branch_list.html', {'branches': branches})
 
 
 class CustomerBranchAddView(LoginRequiredMixin, View):
 
     def get(self, request, customer_id):
+        #todo warto tutaj by pobrać kilenta i wyświetlić informacje na jego temat
         form = CustomerBranchForm()
         return render(request, 'company/customer_branch/customer_branch_add.html', {'form': form})
 
@@ -57,6 +59,7 @@ class CustomerBranchUpdateView(LoginRequiredMixin, View):
         if form.is_valid():
             branch = form.save(commit=False)
             branch.customer = branch.customer
+            #todo mam dzwine wrażenie ze to babol :P
             branch.save()
             return redirect('customer-detail', customer_id=branch.customer.id)
 

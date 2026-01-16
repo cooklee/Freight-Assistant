@@ -13,6 +13,7 @@ def calculate_profit(cleaned_data: Dict[str, Any]) -> Dict[str, float]:
     taxes = cleaned_data.get("taxes") or 0
     invoices = cleaned_data.get("invoices") or 0
     other_expenses = cleaned_data.get("other_expenses") or 0
+    # TODO tak jak w poprzednim przypadku uważaj na float i czemu to 0 nie używasz  .get("leasing", Decimal("0"))
 
     revenue = round(
         (vehicle_efficiency * number_of_vehicles)
@@ -20,6 +21,7 @@ def calculate_profit(cleaned_data: Dict[str, Any]) -> Dict[str, float]:
         * year_work_days,
         2
     )
+    # TODO (finance): piniążki liczymy na decimal
 
     costs = round(
         leasing
@@ -30,6 +32,7 @@ def calculate_profit(cleaned_data: Dict[str, Any]) -> Dict[str, float]:
         + other_expenses,
         2
     )
+    # TODO (finance): Jak wyżej — preferuj Decimal zamiast float + round.
 
     profit = round(revenue - costs, 2)
     profit_perc = round((profit / revenue) * 100, 1) if revenue else 0.0
@@ -40,3 +43,5 @@ def calculate_profit(cleaned_data: Dict[str, Any]) -> Dict[str, float]:
         "profit": profit,
         "profit_perc": profit_perc,
     }
+    # TODO (typing): Jeśli zostajesz przy Decimal, zmień adnotację zwrotu na Dict[str, Decimal] (lub Union dla profit_perc).
+    # TODO (maint): Rozważ wydzielenie "sanity checks" w formie: min_value=0 dla kosztów/cen/dni pracy itd.

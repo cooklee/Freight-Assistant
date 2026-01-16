@@ -1,9 +1,14 @@
 from apps.core.utils.google_maps import get_distance_duration
+# TODO (perf): get_distance_duration robi zewnętrzny request. W generate_schedule jest wołane w pętli dla każdej "nogi".
+# TODO (perf): Rozważ cache (np. origin/destination -> wynik) albo batchowanie, inaczej łatwo o limity i wolne generowanie.
+# TODO (robustness): Rozważ retry/backoff na 429/5xx, albo fallback na avg_speed_kph, zamiast "continue" (gubi nogę).
 
 
 def to_minutes(hours: float) -> int:
     """Convert hours to rounded minutes."""
     return int(round(hours * 60))
+    # TODO (clarity): Nazwa parametru "hours" jest OK, ale w kodzie przekazujesz liczby typu 56/90/45 (jak godziny) — OK.
+    # TODO (style): Dla stałych można rozważyć bezpośrednie wartości minut, jeśli to upraszcza debug.
 
 
 BREAK_AFTER_DRIVE_MIN = 45
@@ -28,6 +33,8 @@ def _stop_service_minutes(stop) -> int:
         return 45
 
     return 60
+    # TODO (maint): Te czasy to "magic numbers". Rozważ stałe / konfigurację (np. dict mapping stop_type->minutes).
+    # TODO (typing): Dodaj typ stop (np. Stop) jeśli to możliwe, ułatwi IDE i refaktoryzację.
 
 
 def generate_schedule(stops, avg_speed_kph=80, driver_count=1):
@@ -47,6 +54,9 @@ def generate_schedule(stops, avg_speed_kph=80, driver_count=1):
       - Loading/unloading/admin is NOT a driving break and MUST NOT reset the 4.5h continuous driving counter.
       - The 45-min driving break must be inserted after 4.5h of driving accumulated since last break/rest.
     """
+
+    # TODO (validation): Jeśli stops ma mniej niż 2 elementy, pętla "for i in range(len(stops)-1)" nic nie zrobi,
+    # TODO (validation): a na końcu i tak dodasz daily rest. Rozważ early return z ostrzeżeniem / wyjątkiem.
 
     # Core limits (planner-oriented heuristics aligned with EU basics)
     MAX_WEEKLY_DRIVE_MIN = to_minutes(56)
@@ -70,6 +80,9 @@ def generate_schedule(stops, avg_speed_kph=80, driver_count=1):
     # Team (two-driver crew) simplified planning constraints
     TEAM_DUTY_WINDOW_MIN = to_minutes(30)  # 30h window (planning simplification)
     TEAM_DAILY_REST_MIN = to_minutes(9)
+
+    # TODO (maint): Wiele stałych z przepisów/heurystyk — warto w przyszłości wyciągnąć do osobnego modułu/configu,
+    # TODO (maint): z komentarzem: dla jakiego kraju/roku i które są uproszczeniem.
 
     schedule = []
 
@@ -113,6 +126,7 @@ def generate_schedule(stops, avg_speed_kph=80, driver_count=1):
         if remaining_in_leg > 0:
             return True
         return leg_index < (len(stops) - 2)
+        # TODO (clarity): Ten warunek jest poprawny, ale dość nieintuicyjny. Rozważ komentarz/przykład indeksów. dodatkowo do tego czepiałem sie z apps/transport/services/calculation_service.py:13
 
     def _insert_break_single_if_needed(leg_index: int, remaining_in_leg: int):
         """
@@ -129,6 +143,8 @@ def generate_schedule(stops, avg_speed_kph=80, driver_count=1):
         if not _more_driving_ahead(leg_index, remaining_in_leg):
             # No more driving expected; do not add a break right before ending schedule.
             continuous_drive_since_break = 0
+            # TODO (logic): To resetuje licznik nawet bez przerwy — to jest heurystyka "koniec jazdy => reset".
+            # TODO (logic): Jeśli chcesz być bardziej zgodny z przepisami, rozważ czy reset powinien następować tylko po break/rest.
             return
 
         # If we cannot fit the break into the current duty window, end the day instead.
@@ -154,6 +170,8 @@ def generate_schedule(stops, avg_speed_kph=80, driver_count=1):
 
             day += 1
             day_of_week += 1
+            # TODO (bug): day_of_week inkrementujesz też w weekly_rest i resetujesz na 1.
+            # TODO (bug): Nie ma modulo 7 ani twardego ograniczenia; bazujesz na >6. Upewnij się, że logika jest spójna.
 
             team_daily_drive[1] = 0
             team_daily_drive[2] = 0
@@ -212,6 +230,7 @@ def generate_schedule(stops, avg_speed_kph=80, driver_count=1):
         team_continuous_drive[2] = 0
         team_off_duty_while_other_drives[1] = 0
         team_off_duty_while_other_drives[2] = 0
+        # TODO (maint): Resetów jest dużo i łatwo się pomylić. Rozważ helper do resetowania "team state".
 
     # Iterate route legs
     for i in range(len(stops) - 1):
@@ -224,6 +243,7 @@ def generate_schedule(stops, avg_speed_kph=80, driver_count=1):
         # For now, if Google fails, skip this leg.
         if km is None or time_min is None:
             continue
+
 
         total_km += km
         remaining = int(time_min)
@@ -327,6 +347,8 @@ def generate_schedule(stops, avg_speed_kph=80, driver_count=1):
                 else:
                     # Simple rotation policy: switch drivers between legs/chunks for realism
                     team_current_driver = other
+                    # TODO (logic): Ten else powoduje przełączanie nawet gdy current nie osiągnął 4.5h,
+                    # TODO (logic): więc realnie rotujesz co "chunk". Jeśli chunk bywa mały, to może wyglądać dziwnie w planie.
 
             # Hard limit warnings/checks
             if biweekly_drive > MAX_2WEEK_DRIVE_MIN:
@@ -363,6 +385,7 @@ def generate_schedule(stops, avg_speed_kph=80, driver_count=1):
     else:
         new_day_with_rest(is_team=True)
 
+
     return {
         "schedule_table": schedule,
         "total_km": int(round(total_km)),
@@ -371,4 +394,5 @@ def generate_schedule(stops, avg_speed_kph=80, driver_count=1):
         "total_rest_time_minutes": int(total_rest),
         "total_other_work_time_minutes": int(total_other),
         "days_for_one_trip": day - 1,
+
     }

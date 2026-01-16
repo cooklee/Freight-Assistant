@@ -69,6 +69,7 @@ class DashboardView(LoginRequiredMixin, View):
             })
 
         missing_schedule_count = calculations_qs.filter(schedule__isnull=True).count()
+        #todo tutaj warto zrobić tak: filter(Q(schedule__isnull=True) | Q(schedule="")) ponieważ schedyke jest polem tekstowym ktore ma blank=True wiec zapisze sie do bazy ""
         if missing_schedule_count:
             alerts.append({
                 "title": "Calculations missing schedule",

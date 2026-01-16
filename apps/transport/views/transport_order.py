@@ -11,6 +11,7 @@ class TransportOrderListView(LoginRequiredMixin, View):
         orders = TransportOrder.objects.select_related(
             "customer", "carrier", "driver_1", "driver_2"
         ).filter(user=request.user).order_by("-id")
+        # TODO (perf/ux): Dodaj paginację, jeśli orderów może być dużo.
 
         return render(request, "transport/order/order_list.html", {
             "orders": orders,
@@ -71,3 +72,4 @@ class TransportOrderDeleteView(LoginRequiredMixin, View):
         order = get_object_or_404(TransportOrder, id=order_id, user=request.user)
         order.delete()
         return redirect("order-list")
+        # TODO (ux): Rozważ messages.success po usunięciu.

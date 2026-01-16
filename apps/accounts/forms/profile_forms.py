@@ -10,7 +10,8 @@ class UserProfileForm(forms.ModelForm):
     facebook = forms.URLField(assume_scheme='https')
     instagram = forms.URLField(assume_scheme='https')
     linkedin = forms.URLField(assume_scheme='https')
-
+#todo widze ten formularz nie tyle jako edycja profilu ale jako edycja Usera/Profilu ale nie widze zapisu do użytkownika danych first_name, last_name
+#todo U Ciebie w modelu te pola mają blank=True, ale w formularzu je nadpisujesz jako forms.URLField(...) bez required=False, więc formularz zacznie wymagać ich wypełnienia.
     class Meta:
         model = UserProfile
         fields = [

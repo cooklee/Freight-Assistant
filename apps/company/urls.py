@@ -1,5 +1,5 @@
 from django.urls import path
-
+#todo jak w accounts
 from .views import (CarrierAddView, CarrierDetailView,
                     CarrierUpdateView, CarrierDeleteView,
                     CarrierListView, CustomerAddView, CustomerDetailView,

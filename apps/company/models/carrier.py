@@ -14,3 +14,6 @@ class Carrier(models.Model):
 
     def __str__(self):
         return self.name
+
+#todo brak validatorow, nip,email,phon
+#todo adres jako model bym zrobił

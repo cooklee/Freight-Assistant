@@ -10,3 +10,4 @@ class MessageForm(forms.Form):
         label="Message",
         max_length=10000,
     )
+#todo znow nie wiem dlaczego nei modelform

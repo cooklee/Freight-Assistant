@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+# TODO (maint): Nie importuj User "na sztywno". Jeśli kiedyś przejdziesz na custom user model, to się wysypie.
 from django.db import models
 
 from .conversation import Conversation
@@ -17,6 +18,7 @@ class Message(models.Model):
     sender = models.ForeignKey(User, on_delete=models.CASCADE)
     text = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
+    # TODO (data): Jeśli zależy Ci na sortowaniu po czasie, warto dodać db_index=True.
     is_read = models.BooleanField(default=False)
 
     def __str__(self):

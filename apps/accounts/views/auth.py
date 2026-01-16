@@ -1,5 +1,6 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
+#todo nie importuj User na sztywno
 from django.shortcuts import render, redirect
 from django.views import View
 
@@ -21,6 +22,7 @@ class LoginView(View):
             if user:
                 login(request, user)
                 return redirect('dashboard')
+            #todo Brakuje obsługi next po logowaniu
             else:
                 form.add_error(None, "Invalid username or password")
 
@@ -32,7 +34,8 @@ class LogoutView(View):
         logout(request)
         return redirect('login')
 
-
+#todo Nie korzystasz z gotowych widoków Django auth, o ile podczas zajęć uczylismy sie jak je napisać to na produkcji
+# używa sie wbudowanych chba ze jest jakis istotny powód by zrobić to inaczej
 class RegisterView(View):
     def get(self, request):
         form = RegisterViewForm()

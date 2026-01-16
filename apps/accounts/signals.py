@@ -21,3 +21,7 @@ def save_user_profile(sender, instance, **kwargs):
     """
     if hasattr(instance, "profile"):
         instance.profile.save()
+
+
+#todo ja mowie sygnałą NIE chba ze nie moge tego inaczej obejść (np robie plugin) czeste błedy i problemy z "magiczynym działaniem"
+#powodują ze ich nie lubie wiec unikam jak sie tylko da (ale znam inne podejścia wybierz sam)

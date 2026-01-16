@@ -27,3 +27,6 @@ class CustomerBranch(models.Model):
 
     def __str__(self):
         return f"{self.name} ({self.customer.name})"
+    #todo brak unikalności nazw w obrębie klienta uniqueConstraint(fields=['customer', 'name'], name='uniq_branch_name_per_customer')
+
+#todo zauważ ze carrier i customer maja te same dane moze da sie coś z tym zrobi mozna zrobić jedną tabele z opcja customer, i zrobić proxy model

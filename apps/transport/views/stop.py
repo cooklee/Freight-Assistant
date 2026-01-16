@@ -16,6 +16,8 @@ class StopCreateView(LoginRequiredMixin, View):
             "route": route,
             "title": "Add Stop",
             "GOOGLE_MAPS_API_KEY": settings.GOOGLE_MAPS_API_KEY,
+            # TODO (security): Wystawianie API key do frontu jest OK tylko jeśli klucz jest odpowiednio restricted
+            # TODO (security): (HTTP referrers + ograniczone API). Inaczej ktoś może go wyciągnąć i nabić koszty.
         })
 
     def post(self, request, route_id):
@@ -26,6 +28,7 @@ class StopCreateView(LoginRequiredMixin, View):
             stop = form.save(commit=False)
             stop.route = route
             stop.save()
+            # TODO (data): Rozważ wymuszenie spójności stop_number (unikalny w obrębie route) i min liczby stopów.
             return redirect("route-detail", route_id=route.id)
 
         return render(request, "transport/stop/stop_form.html", {
@@ -33,6 +36,7 @@ class StopCreateView(LoginRequiredMixin, View):
             "route": route,
             "title": "Add Stop",
             "GOOGLE_MAPS_API_KEY": settings.GOOGLE_MAPS_API_KEY,
+            # TODO (security): Jak wyżej — upewnij się, że key jest restricted.
         })
 
 
@@ -57,6 +61,7 @@ class StopUpdateView(LoginRequiredMixin, View):
 
         if form.is_valid():
             form.save()
+            # TODO (data): Jeśli stop_number może się zmieniać, rozważ walidację konfliktów (unikalność w obrębie route).
             return redirect("route-detail", route_id=stop.route.id)
 
         return render(request, "transport/stop/stop_form.html", {

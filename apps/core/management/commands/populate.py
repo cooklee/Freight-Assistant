@@ -61,6 +61,7 @@ class Command(BaseCommand):
     # RESET DATA
 
     def _reset_data(self):
+        #TODO zajebiscie niebespieczne wywala ci całość w kosmos warto zrobić zabezpieczenie ze jesli nie debug to rise CommandError chba ze z --force
         Message.objects.all().delete()
         Conversation.objects.all().delete()
         Calculation.objects.all().delete()
@@ -73,7 +74,7 @@ class Command(BaseCommand):
         Customer.objects.all().delete()
 
         User.objects.exclude(is_superuser=True).delete()
-
+        #todo nie ma potrzeby recznie wywalać wszystkiego usuń główne obiekty reszta spadnie sama za pomoca cascade
     # TEST USER
 
     def _create_test_user(self):
@@ -132,6 +133,7 @@ class Command(BaseCommand):
             customer = Customer.objects.create(
                 name=fake.company(),
                 nip=fake.unique.msisdn()[:10],
+                #todo generalnie spoko ale jakisli dorobisz walidacje nip'a po checksumie to sie wyjebie
                 address=fake.address().replace("\n", ", "),
                 email=fake.email(),
                 phone=fake.phone_number(),
@@ -213,8 +215,17 @@ class Command(BaseCommand):
             customer = random.choice(customers)
             carrier = random.choice(carriers)
             carrier_drivers = [d for d in drivers if d.carrier_id == carrier.id]
+            #todo nie potrzebnie budujesz mape za kazdym razem kiedy robisz pętelke
+            #mozesz ja zbudować powyżej
+            """
+            drivers_by_carrier = {}
+            for d in drivers:
+                drivers_by_carrier.setdefault(d.carrier_id, []).append(d)
+                #to powinno być linijce 213
+            """
             driver_1 = random.choice(carrier_drivers) if carrier_drivers else None
             driver_2 = random.choice(carrier_drivers) if carrier_drivers and random.choice([True, False]) else None
+            #todo obaj driverzy maga być ty samym driverem polecam urzyć random sample
             route = random.choice(routes)
 
             stops = list(route.stops.all())
@@ -244,7 +255,7 @@ class Command(BaseCommand):
         for route in routes:
             carrier = random.choice(carriers)
             chosen = random.sample(drivers, k=random.randint(1, 2))
-
+            #todo wybrany driver jest kierowca z całej bazy driverów a nie z danego przewoźnika czy to jest bład ??
             calculation = Calculation(
                 user=route.user,
                 route=route,
@@ -272,7 +283,8 @@ class Command(BaseCommand):
     def _create_messaging(self, users):
         for u1 in users:
             partners = [u for u in users if u != u1]
-
+            #todo towrzysz konwersacje które mogą sie powtorzyć powiedzmy ze napierw pan AA jako u1 bedzie miał połaczenie z BB
+            #todo następnie pan bb jako u1 bedzie miał poączenie z AA
             for _ in range(2):
                 partner = random.choice(partners)
 
@@ -290,3 +302,7 @@ class Command(BaseCommand):
                         text=fake.sentence(nb_words=random.randint(5, 15)),
                     )
                     sender = partner if sender == u1 else u1
+
+
+#todo moze warto ustawić seeda tak by nie był losowy, przy debagowaniu bardzo ułatwia sprawe
+#todo brak transakcji (transaction.atomic()) jak cos sie wyjebie bedziesz miał baze w połowie wypelniona lepiej dodać i miec pewność ze zawsze albo jest pusta albo w pełni wypełniona

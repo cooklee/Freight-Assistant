@@ -35,7 +35,7 @@ from .views.transport_order import (
     TransportOrderUpdateView,
     TransportOrderDeleteView,
 )
-
+#todo to samo co wkażdym url
 urlpatterns = [
     # DYNAMIC FILTER
     path("ajax/drivers/<int:carrier_id>/", drivers_by_carrier, name="drivers-by-carrier"),

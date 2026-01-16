@@ -34,6 +34,7 @@ class CustomerDetailView(LoginRequiredMixin, View):
             Customer, id=customer_id
         )
         branches = customer.branches.all()
+        #todo moze warto prefetch_related i nie robuć tego tylko w szabolnie sie odwołac to tego
         return render(request, 'company/customer/customer_detail.html', {'customer': customer, 'branches': branches})
 
 
@@ -69,3 +70,7 @@ class CustomerDeleteView(LoginRequiredMixin, View):
         )
         customer.delete()
         return redirect('customer-list')
+
+
+#todo widze cruda moze warto przyjrzeć sie widoką generycznym skoro zawsze ejst to samo ??
+#todo znow all() warto sortować, paginacja

@@ -1,7 +1,7 @@
 from django.urls import path
 
 from .views import ConversationListView, ConversationAddView, ConversationDetailView
-
+#todo jak w reszcie urlsoów
 urlpatterns = [
     path('', ConversationListView.as_view(), name='conversation-list'),
 

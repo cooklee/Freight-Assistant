@@ -13,12 +13,16 @@ class StopForm(forms.ModelForm):
                 "class": "input input-bordered w-full",
                 'inputmode': 'numeric',
             }),
+            # TODO (ux): stop_number to liczba — rozważ forms.NumberInput(attrs={"min": 1, ...})
+            # TODO (validation): i ustaw min_value w polu (albo walidację w clean_stop_number), żeby nie przyjąć 0/ujemnych.
+
             "stop_type": forms.Select(attrs={
                 "class": "select select-bordered w-full",
             }),
             "location": forms.TextInput(attrs={
                 "class": "input input-bordered w-full autocomplete-location"
             }),
+
             "driver_participates": forms.CheckboxInput(attrs={
                 "class": "checkbox"
             }),
@@ -27,10 +31,13 @@ class StopForm(forms.ModelForm):
             "stop_number": "Stop #",
         }
 
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         self.fields["stop_type"].required = True
+        # TODO (style): Jeśli stop_type w modelu jest wymagany (blank=False), to required=True jest i tak domyślne.
+
         self.fields["stop_type"].choices = [
             c for c in self.fields["stop_type"].choices if c[0] != ""
         ]

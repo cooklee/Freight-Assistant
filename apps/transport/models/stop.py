@@ -11,6 +11,7 @@ STOP_TYPE_CHOICES = [
     ('FINAL_STOP', 'Final stop'),
     ('RETURN_TO_BASE', 'Return to base'),
 ]
+# TODO (style): Rozważ użycie TextChoices (Django) zamiast listy krotek — lepsza czytelność i autouzupełnianie.
 
 
 class Stop(models.Model):
@@ -21,8 +22,14 @@ class Stop(models.Model):
     route = models.ForeignKey(Route, on_delete=models.CASCADE, related_name='stops')
 
     stop_number = models.IntegerField()
+    # TODO (validation): Rozważ PositiveIntegerField albo walidację min_value=1.
+    # TODO (data): Dodaj UniqueConstraint(route, stop_number), żeby nie dało się mieć dwóch stopów o tym samym numerze w jednej trasie.
+
     stop_type = models.CharField(max_length=30, choices=STOP_TYPE_CHOICES)
+    # TODO (data): Jeśli stop_type jest wymagany, OK. Jeśli czasem może być pusty, ustaw blank=True i dodaj empty choice.
+
     location = models.CharField(max_length=150)
+    # TODO (data): Jeśli location to miasto/adres, rozważ większy max_length (adresy potrafią być dłuższe).
 
     driver_participates = models.BooleanField(default=True)
 
